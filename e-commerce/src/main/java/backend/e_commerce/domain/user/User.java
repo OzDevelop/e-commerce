@@ -1,5 +1,6 @@
 package backend.e_commerce.domain.user;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,16 +17,17 @@ public class User {
     private final String name;
     private final String phone;
     private final UserRole role;
+    private final List<Address> addresses;
 
-    public static User createUser(String email, String password, String name, String phone, UserRole role) {
-        return new User(null, email, password, name, phone, role);
+    public static User createUser(String email, String password, String name, String phone, UserRole role, List<Address> addresses) {
+        return new User(null, email, password, name, phone, role, addresses);
     }
 
     public User changePassword(String newPassword) {
-        return new User(this.id, this.email, newPassword, this.name, this.phone, this.role);
+        return new User(this.id, this.email, newPassword, this.name, this.phone, this.role, this.addresses);
     }
 
     public User changeUserInfo(String newName, String newPhone) {
-        return new User(this.id, this.email, this.password, newName, newPhone, this.role);
+        return new User(this.id, this.email, this.password, newName, newPhone, this.role, this.addresses);
     }
 }

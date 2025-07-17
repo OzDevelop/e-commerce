@@ -2,11 +2,14 @@ package backend.e_commerce.application.service;
 
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
 import backend.e_commerce.application.port.out.UserRepository;
+import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.command.user.UpdateUserCommand;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,9 +17,9 @@ public class UserService implements UserInfoCommandUserUseCase {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public User registerUser(RegisterUserCommand command) {
-        User user = User.createUser(command.email(), command.password(), command.name(), command.phone(), command.role());
-
+        User user = command.toDomain();
         return userRepository.save(user);
     }
 

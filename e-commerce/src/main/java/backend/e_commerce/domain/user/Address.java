@@ -15,4 +15,12 @@ public class Address {
 
     private final boolean isDefault;
 
+    public Address(String address, String addressDetail, String zipCode, boolean isDefault) {
+        this.id = null;
+        this.userId = null;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.zipCode = zipCode;
+        this.isDefault = isDefault;
+    }
 }
