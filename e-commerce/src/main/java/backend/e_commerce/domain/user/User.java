@@ -1,15 +1,17 @@
 package backend.e_commerce.domain.user;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@Builder
 public class User {
     private final Long id;
 
     private final String email;
-    private String password;
+    private final String password;
 
     private final String name;
     private final String phone;

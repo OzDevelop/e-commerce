@@ -28,11 +28,14 @@ class UserServiceTest {
     private UserService userService;
 
     private RegisterUserCommand registerUserCommand;
+    private Long userId;
     private User expectedUser;
 
     @BeforeEach
     void setUp() {
         // given
+        userId = 1L;
+
         registerUserCommand = new RegisterUserCommand(
                 "test@example.com",
                 "password",
@@ -52,8 +55,6 @@ class UserServiceTest {
 
     @Test
     void 사용자_회원가입_테스트() {
-
-
         given(userRepository.save(any(User.class))).willReturn(expectedUser);
 
         // when
@@ -68,14 +69,13 @@ class UserServiceTest {
     @Test
     void 사용자_비밀번호변경_테스트() {
         // given
-        Long userId = 1L;
         String newPassword = "newPassword";
 
         User existedUser = mock(User.class);
         User changeUser = mock(User.class);
 
         given(userRepository.findById(userId)).willReturn(existedUser);
-        given(userService.changePassword(userId, newPassword)).willReturn(changeUser);
+        given(existedUser.changePassword(newPassword)).willReturn(changeUser);
         given(userRepository.save(changeUser)).willReturn(changeUser);
 
         // when
@@ -91,7 +91,6 @@ class UserServiceTest {
     @Test
     void 사용자_정보수정_테스트() {
         // given
-        Long userId = 1L;
         UpdateUserCommand updateUserCommand = new UpdateUserCommand("김길동", "010-9999-9999");
 
         User existingUser = mock(User.class);
