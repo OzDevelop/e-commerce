@@ -25,7 +25,6 @@ bin/
 *.iws
 *.iml
 *.ipr
-out/
 
 
 ### NetBeans ###
@@ -94,7 +93,7 @@ cmake-build-*/
 *.iws
 
 # IntelliJ
-out/
+
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
