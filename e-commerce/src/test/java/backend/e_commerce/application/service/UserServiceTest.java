@@ -7,10 +7,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import backend.e_commerce.application.command.user.RegisterUserCommand;
+import backend.e_commerce.application.command.user.RegisterUserCommand.AddressCommand;
 import backend.e_commerce.application.command.user.UpdateUserCommand;
 import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.domain.user.UserRole;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +43,13 @@ class UserServiceTest {
                 "password",
                 "홍길동",
                 "010-1234-5678",
-                UserRole.USER
+                UserRole.USER,
+                List.of(new AddressCommand(
+                        "서울특별시 강남구 테헤란로 123",
+                "101동 202호",
+                "06134",
+                true
+                ))
         );
 
         expectedUser = User.createUser(
@@ -49,7 +57,8 @@ class UserServiceTest {
                 registerUserCommand.password(),
                 registerUserCommand.name(),
                 registerUserCommand.phone(),
-                registerUserCommand.role()
+                registerUserCommand.role(),
+                registerUserCommand.toAddressDomainList()
         );
     }
 

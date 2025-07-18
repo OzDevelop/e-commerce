@@ -2,6 +2,7 @@ package backend.e_commerce.domain.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,16 @@ class UserTest {
         String name = "홍길동";
         String phone = "010-1234-5678";
         UserRole role = UserRole.USER;
+        List<Address> addressList = List.of(
+                new Address(
+                        "서울특별시 강남구 테헤란로 123",
+                        "101동 202호",
+                        "06134",
+                        true
+                )
+        );
 
-        user = User.createUser(email, password, name, phone, role);
+        user = User.createUser(email, password, name, phone, role, addressList);
     }
 
     @Test
