@@ -2,6 +2,7 @@ package backend.e_commerce.representaion.in.web;
 
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
+import backend.e_commerce.domain.user.User;
 import backend.e_commerce.representaion.request.RegisterUserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,11 @@ public class UserController {
 
     @PostMapping("/register")
     //TODO - 공통 Response 객체 구현 시 변경 예정
-    public ResponseEntity<Void> registerUser(@RequestBody RegisterUserRequestDto request) {
+    //TODO - ResponseDTO 구현 필요.
+    public User registerUser(@RequestBody RegisterUserRequestDto request) {
         RegisterUserCommand command = request.toRegisterUserCommand();
-        userInfoCommandUserUseCase.registerUser(command);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return userInfoCommandUserUseCase.registerUser(command);
     }
 
     //TODO - User 정보 수정
