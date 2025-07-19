@@ -1,5 +1,6 @@
 package backend.e_commerce.infrastructure.out.persistence.user.entity;
 
+import backend.core.common.entity.TimeBaseEntity;
 import backend.e_commerce.application.command.user.RegisterUserCommand.AddressCommand;
 import backend.e_commerce.domain.user.Address;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AddressEntity {
+public class AddressEntity extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

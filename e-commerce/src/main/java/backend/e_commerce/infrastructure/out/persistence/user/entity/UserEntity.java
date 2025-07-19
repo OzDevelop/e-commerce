@@ -1,5 +1,6 @@
 package backend.e_commerce.infrastructure.out.persistence.user.entity;
 
+import backend.core.common.entity.TimeBaseEntity;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.domain.user.UserRole;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserEntity {
+public class UserEntity extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
