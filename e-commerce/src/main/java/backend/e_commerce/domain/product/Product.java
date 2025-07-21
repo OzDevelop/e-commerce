@@ -11,14 +11,14 @@ public class Product {
     private final Long id;
     private final Long sellerId;
 
-    private final String category;
-    private final String name;
-    private final String description;
-    private final int price; // 상품 가격
+    private String category;
+    private String name;
+    private String description;
+    private int price; // 상품 가격
     private int stock; // 재고 수량
     private ProductStatus status;
-    private final String brand;
-    private final String manufacturer;
+    private String brand;
+    private String manufacturer;
 
     public void increaseStock(int amount) {
         int newStockQuantity = stock + amount;
@@ -38,6 +38,33 @@ public class Product {
         }
     }
 
+    public void changeCategory(String newCategory) {
+        this.category = newCategory;
+    }
 
+    public void changeName(String name) {
+        this.name = name;
+    }
 
+    public void changePrice(int price) {
+        this.price = price;
+    }
+
+    public void changeStock(int stock) {
+        this.stock = stock;
+    }
+    public void changeStatus(ProductStatus status) {
+        this.status = status;
+    }
+    public void changeBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void changeManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
 }
