@@ -1,7 +1,7 @@
 package backend.e_commerce.infrastructure.out.persistence.order.entity;
 
 import backend.e_commerce.domain.order.OrderStatus;
-import backend.e_commerce.domain.user.Address;
+import backend.e_commerce.infrastructure.out.persistence.payment.entity.PaymentEntity;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
