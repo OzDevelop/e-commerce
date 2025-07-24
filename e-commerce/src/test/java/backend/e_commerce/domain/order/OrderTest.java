@@ -21,16 +21,18 @@ class OrderTest {
     @BeforeEach
     void setUp() {
         address = new Address("서울시", "강남구", "123-45", false);
+
+        item1 = new OrderItem(1L, "product-1", 5, 10000);
+        item2 = new OrderItem(2L, "product-2", 5, 5000);
+        
         payment = Payment.builder()
                 .paymentId(1L)
                 .paymentKey("pay-key")
                 .paymentMethod(PaymentMethod.CREDIT_CARD)
                 .paymentStatus(PaymentStatus.COMPLETED)
-                .totalAmount(7000)
+                .totalAmount(item1.getAmount() + item2.getAmount())
                 .canceledAmount(0)
                 .build();
-        item1 = new OrderItem(1L, "product-1", 5, 10000);
-        item2 = new OrderItem(2L, "product-2", 5, 5000);
     }
 
     @Test

@@ -72,6 +72,11 @@ public class Order {
         }
 
         item.cancel();
+
+        int cancelAmount = item.getAmount();
+        System.out.println("cancelAmount >>>>>> " + cancelAmount);
+        this.payment.cancel(cancelAmount);
+
         if (allItemsCancelled()) {
             this.orderStatus = OrderStatus.CANCELLED;
         }
@@ -81,6 +86,10 @@ public class Order {
         if (this.orderStatus == OrderStatus.COMPLETED) {
             throw new IllegalStateException("이미 완료된 주문은 취소할 수 없습니다.");
         }
+
+        int totalCancelAmount = this.payment.getTotalAmount() - this.payment.getCanceledAmount();
+
+        this.payment.cancel(totalCancelAmount);
         this.orderStatus = OrderStatus.CANCELLED;
         this.orderItems.forEach(OrderItem::cancel);
     }
