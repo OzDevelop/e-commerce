@@ -11,7 +11,6 @@ public class PaymentLedger {
     private Long ledgerId;         // 정산 레코드 식별자 (DB에서 부여)
     private String paymentKey;     // 결제의 키값
 
-    private LedgerType ledgerType;
     private PaymentMethod method;  // 결제 방식
     private PaymentStatus paymentStatus; // 상태: DONE, CANCELED, PARTIAL_CANCELED 등
 
