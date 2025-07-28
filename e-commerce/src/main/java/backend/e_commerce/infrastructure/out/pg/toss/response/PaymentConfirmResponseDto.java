@@ -1,7 +1,12 @@
 package backend.e_commerce.infrastructure.out.pg.toss.response;
 
+import backend.e_commerce.domain.payment.PaymentLedger;
+import backend.e_commerce.domain.payment.PaymentMethod;
+import backend.e_commerce.domain.payment.PaymentStatus;
 import backend.e_commerce.infrastructure.out.pg.toss.response.payment.method.Card;
+import lombok.Getter;
 
+@Getter
 public class PaymentConfirmResponseDto {
     private String paymentKey;
     private String orderId;
@@ -14,4 +19,16 @@ public class PaymentConfirmResponseDto {
     private int suppliedAmount; // 공급가액, 결제 취소 및 부분 취소가 발생하면 값이 변경됨.
     private String requestedAt;
     private String approvedAt;
+
+    public PaymentLedger toPaymentLedgerEntity() {
+        return PaymentLedger.builder()
+                .paymentKey(paymentKey)
+                .method(PaymentMethod.fromMethodName(paymentMethod))
+                .paymentStatus(PaymentStatus.valueOf(paymentStatus))
+                .totalAmount(totalAmount)
+                .balanceAmount(balanceAmount)
+                .build();
+
+
+    }
 }

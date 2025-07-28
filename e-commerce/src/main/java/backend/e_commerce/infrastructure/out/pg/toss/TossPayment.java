@@ -1,5 +1,7 @@
 package backend.e_commerce.infrastructure.out.pg.toss;
 
+import backend.e_commerce.application.port.out.api.PaymentAPIs;
+import backend.e_commerce.domain.payment.PaymentStatus;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentCancelResponseDto;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentConfirmResponseDto;
 import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Component
-public class TossPayment {
+public class TossPayment implements PaymentAPIs {
     private static final String BASIC_DELIMITER = ":";
     private static final String AUTH_HEADER_PREFIX = "Basic";
     private static final int CONNECT_TIMEOUT_SECONDS = 1;
@@ -43,6 +45,7 @@ public class TossPayment {
         return AUTH_HEADER_PREFIX + new String(encodedBytes);
     }
 
+
     private ClientHttpRequestFactory createPaymentReqeustFactory() {
         SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
 
@@ -52,6 +55,7 @@ public class TossPayment {
         return simpleClientHttpRequestFactory;
     }
 
+    @Override
     public PaymentConfirmResponseDto requestPaymentConfirm(PaymentConfirmRequestDto paymentConfirmRequestDto) {
         return restClient.method(HttpMethod.POST)
                 .uri(paymentProperties.getConfirmEndpoint())
@@ -61,6 +65,7 @@ public class TossPayment {
                 .body(PaymentConfirmResponseDto.class);
     }
 
+    @Override
     public PaymentCancelResponseDto requestPaymentCancel(String paymentKey, PaymentCancelRequestDto paymentCancelRequestDto) {
         return restClient.method(HttpMethod.POST)
                 .uri(paymentProperties.getCancelUrl(paymentKey))
@@ -68,5 +73,10 @@ public class TossPayment {
                 .body(paymentCancelRequestDto)
                 .retrieve()
                 .body(PaymentCancelResponseDto.class);
+    }
+
+    @Override
+    public boolean isPaymentConfirmed(String status) {
+        return status.equals(PaymentStatus.COMPLETED.toString());
     }
 }
