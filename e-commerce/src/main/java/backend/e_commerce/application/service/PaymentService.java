@@ -22,7 +22,7 @@ public class PaymentService implements PaymentCommandUseCase {
     private final PaymentAPIs tossPayment;
 
     private final OrderRepository orderRepository;
-    private PaymentLedgerRepository paymentLedgerRepository;
+    private final PaymentLedgerRepository paymentLedgerRepository;
 
 
     @Override
