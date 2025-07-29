@@ -27,7 +27,7 @@ public class PaymentLedgerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ledgerId;
+    private Long id;
 
     private String paymentKey;
 
