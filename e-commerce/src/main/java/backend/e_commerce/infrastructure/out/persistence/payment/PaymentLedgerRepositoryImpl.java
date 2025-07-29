@@ -19,4 +19,11 @@ public class PaymentLedgerRepositoryImpl implements PaymentLedgerRepository {
 
         return PaymentLedgerMapper.toDomain(paymentLedgerEntity);
     }
+
+    @Override
+    public PaymentLedger findOneByPaymentKeyDesc(String paymentKey) {
+        PaymentLedgerEntity entity = jpaPaymentLedgerRepository.findTopByPaymentKeyOrderByIdDesc(paymentKey)
+                .orElseThrow(() -> new NullPointerException("findOneByPaymentKeyDesc ::: Not found Payment Transaction"));
+        return  PaymentLedgerMapper.toDomain(entity);
+    }
 }
