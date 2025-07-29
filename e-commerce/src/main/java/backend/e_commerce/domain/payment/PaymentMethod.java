@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum PaymentMethod {
+    CARD("카드"),
     CREDIT_CARD("신용 카드"),
     DEBIT_CARD("직불 카드"),
     PAYPAL("페이팔"),
