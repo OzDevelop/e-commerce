@@ -53,6 +53,13 @@ package backend.e_commerce.infrastructure.out.pg.toss.response.payment.method;
  * ※ 간편결제 카드라면 별도의 간편결제 응답 가이드를 참고하세요.
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Card {
     private String issuerCode;
     private String acquirerCode;
