@@ -8,7 +8,7 @@ public interface OrderCommandUseCase {
     Order createOrder(CreateOrderCommand command);
 
     void complete(UUID orderId);
-    void cancelItem(UUID orderId, Long orderItemId);
+    void cancelItem(UUID orderId, Long[] orderItemId);
     void cancelAll(UUID orderId);
 
 }

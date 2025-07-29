@@ -38,9 +38,10 @@ public class OrderService implements OrderCommandUseCase {
 
     @Override
     @Transactional
-    public void cancelItem(UUID orderId, Long orderItemId) {
+    public void cancelItem(UUID orderId, Long[] orderItemId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
         order.orderCancel(orderItemId);
 
         orderRepository.update(order);
@@ -53,5 +54,11 @@ public class OrderService implements OrderCommandUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.orderAllCancel();
         orderRepository.update(order);
+    }
+
+    public Order getOrderInfo(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new IllegalArgumentException("Order not found"));
+
     }
 }

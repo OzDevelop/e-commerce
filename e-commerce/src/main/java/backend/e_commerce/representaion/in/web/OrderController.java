@@ -43,7 +43,7 @@ public class OrderController {
 
     @PatchMapping("/{orderId}/items/{orderItemId}/cancel")
     public ResponseEntity<Void> cancelOrderItem(@PathVariable UUID orderId,
-                                                @PathVariable Long orderItemId) {
+                                                @PathVariable Long[] orderItemId) {
         orderCommandUseCase.cancelItem(orderId, orderItemId);
         return ResponseEntity.ok().build();
     }
