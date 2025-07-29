@@ -4,6 +4,7 @@ import backend.e_commerce.domain.payment.PaymentLedger;
 import java.util.List;
 
 public interface PaymentQueryUseCase {
-    List<PaymentLedger> getPaymentLedger(Long paymentKey);
+//    List<PaymentLedger> getPaymentLedger(Long paymentKey);
+    PaymentLedger getLastPaymentLedger(String paymentKey);
 
 }
