@@ -3,7 +3,7 @@ package backend.e_commerce.application.command.order;
 import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.user.Address;
-import backend.e_commerce.representaion.request.CreateOrderRequestDto;
+import backend.e_commerce.representaion.request.order.CreateOrderRequestDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
