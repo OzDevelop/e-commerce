@@ -58,20 +58,28 @@ public class Order {
     }
 
     // 특정 제품만 취소
-    public void orderCancel(Long orderItemId) {
+    public void orderCancel(Long[] itemIds) {
         if(this.orderStatus == OrderStatus.COMPLETED) {
             throw new IllegalStateException("이미 완료된 주문은 취소할 수 없습니다.");
         }
 
-        OrderItem item = this.orderItems.stream()
-                .filter(orderItem -> orderItem.getId().equals(orderItemId)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 주문 상품이 존재하지 않습니다."));
+        int totalCancelAmount = 0;
 
-        if(item.getStatus() == OrderStatus.CANCELLED) {
-            throw new IllegalStateException("이미 취소된 상품입니다.");
+        for(long orderItemId : itemIds) {
+            OrderItem item = this.orderItems.stream()
+                    .filter(orderItem -> orderItem.getId().equals(orderItemId)).findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("해당 주문 상품이 존재하지 않습니다."));
+
+            if(item.getStatus() == OrderStatus.CANCELLED) {
+                throw new IllegalStateException("이미 취소된 상품입니다.");
+            }
+            item.cancel();
+            totalCancelAmount += item.getAmount();
         }
 
-        item.cancel();
+
+        this.payment.cancel(totalCancelAmount);
+
         if (allItemsCancelled()) {
             this.orderStatus = OrderStatus.CANCELLED;
         }
@@ -81,6 +89,10 @@ public class Order {
         if (this.orderStatus == OrderStatus.COMPLETED) {
             throw new IllegalStateException("이미 완료된 주문은 취소할 수 없습니다.");
         }
+
+        int totalCancelAmount = this.payment.getTotalAmount() - this.payment.getCanceledAmount();
+
+        this.payment.cancel(totalCancelAmount);
         this.orderStatus = OrderStatus.CANCELLED;
         this.orderItems.forEach(OrderItem::cancel);
     }

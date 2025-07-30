@@ -7,7 +7,6 @@ public class PaymentEntityMapper {
     // Payment
     public static Payment toDomain(PaymentEntity entity) {
         return Payment.builder()
-                .paymentKey(entity.getPaymentKey())
                 .paymentMethod(entity.getPaymentMethod())
                 .paymentStatus(entity.getPaymentStatus())
                 .totalAmount(entity.getTotalAmount())
@@ -17,7 +16,6 @@ public class PaymentEntityMapper {
 
     public static PaymentEntity toEntity(Payment payment) {
         return PaymentEntity.builder()
-                .paymentKey(payment.getPaymentKey())
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
                 .totalAmount(payment.getTotalAmount())

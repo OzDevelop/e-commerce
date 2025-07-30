@@ -21,16 +21,17 @@ class OrderTest {
     @BeforeEach
     void setUp() {
         address = new Address("서울시", "강남구", "123-45", false);
-        payment = Payment.builder()
-                .paymentId(1L)
-                .paymentKey("pay-key")
-                .paymentMethod(PaymentMethod.CREDIT_CARD)
-                .paymentStatus(PaymentStatus.COMPLETED)
-                .totalAmount(7000)
-                .canceledAmount(0)
-                .build();
+
         item1 = new OrderItem(1L, "product-1", 5, 10000);
         item2 = new OrderItem(2L, "product-2", 5, 5000);
+
+        payment = Payment.builder()
+                .paymentId(1L)
+                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .paymentStatus(PaymentStatus.COMPLETED)
+                .totalAmount(item1.getAmount() + item2.getAmount())
+                .canceledAmount(0)
+                .build();
     }
 
     @Test
@@ -76,7 +77,6 @@ class OrderTest {
     void 주문_결제실패된_주문_완료처리시_예외_테스트() {
         Payment failPayment = Payment.builder()
                 .paymentId(2L)
-                .paymentKey("fail-key")
                 .paymentMethod(PaymentMethod.BANK_TRANSFER)
                 .paymentStatus(PaymentStatus.FAILED)
                 .totalAmount(5000)

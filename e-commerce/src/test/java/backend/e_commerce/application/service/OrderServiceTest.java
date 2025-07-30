@@ -50,7 +50,7 @@ class OrderServiceTest {
                 new OrderItem(2L, "P-2", 10, 50000)
         );
 
-        payment = new Payment(null, "pay-20240722-abcdef", PaymentMethod.CREDIT_CARD, PaymentStatus.COMPLETED, 60000, 0);
+        payment = new Payment(null, PaymentMethod.CREDIT_CARD, PaymentStatus.COMPLETED, 60000, 0);
 
         createOrderCommand = new CreateOrderCommand(
                 1L,
@@ -78,7 +78,6 @@ class OrderServiceTest {
         assertEquals(realOrder, result);
         assertEquals(createOrderCommand.getUserId(), result.getUserId());
         assertEquals(result.getOrderItems().get(0).getProductId(), createOrderCommand.getOrderItems().get(0).getProductId());
-        assertEquals(result.getPayment().getPaymentKey(), createOrderCommand.getPayment().getPaymentKey());
     }
 
     @Test
