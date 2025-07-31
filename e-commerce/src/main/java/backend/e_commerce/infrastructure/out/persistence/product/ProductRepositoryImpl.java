@@ -36,6 +36,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public Product update(Product product) {
+        ProductEntity productEntity = jpaProductRepository.findById(product.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + product.getId()));
+
+        productEntity.setStock(product.getStock());
+
+        return ProductEntityMapper.toDomain(productEntity);
+    }
+
+    @Override
     public Optional<Product> findById(Long productId) {
         return jpaProductRepository.findById(productId)
                 .map(ProductEntityMapper::toDomain);

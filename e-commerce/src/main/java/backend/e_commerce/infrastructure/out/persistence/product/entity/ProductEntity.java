@@ -39,4 +39,8 @@ public class ProductEntity extends TimeBaseEntity {
     private ProductStatus status;
     private String brand;
     private String manufacturer;
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
 }
