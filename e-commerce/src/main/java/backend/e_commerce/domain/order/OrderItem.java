@@ -10,13 +10,13 @@ import lombok.Getter;
 public class OrderItem {
     private final Long id;
 
-    private final String productId;
+    private final Long productId;
     private OrderStatus status; // 주문 상태, 기본값은 결제 대기 중
     private  int quantity; // 수량
     private final int unitPrice;    // 단위 가격
     private int amount; // 통합 가격
 
-    public OrderItem(Long id, String productId, int quantity, int unitPrice) {
+    public OrderItem(Long id, Long productId, int quantity, int unitPrice) {
         this.id = id;
         this.productId = productId;
         this.quantity = quantity;
