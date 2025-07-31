@@ -15,8 +15,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class Payment {
-    private final Long paymentId;
-//    private final String paymentKey; -> PG 사에서 발급하는 결제 키, PaymentLedger로 이동
+    private final String paymentKey; // -> PG 사에서 발급하는 결제 키, PaymentLedger로 이동
 
     private final PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;

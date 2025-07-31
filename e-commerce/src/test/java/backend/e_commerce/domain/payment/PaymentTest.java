@@ -19,7 +19,7 @@ class PaymentTest {
         item2 = new OrderItem(2L, "product-2", 5, 5000);
 
         payment = Payment.builder()
-                .paymentId(1L)
+                .paymentKey(1L)
                 .paymentMethod(PaymentMethod.CREDIT_CARD)
                 .paymentStatus(PaymentStatus.PENDING)
                 .totalAmount(item1.getAmount() + item2.getAmount())

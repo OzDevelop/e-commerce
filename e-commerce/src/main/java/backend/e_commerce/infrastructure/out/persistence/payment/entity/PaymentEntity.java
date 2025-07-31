@@ -22,9 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "payments")
 public class PaymentEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String paymentKey;
 
     @Enumerated(EnumType.STRING)
