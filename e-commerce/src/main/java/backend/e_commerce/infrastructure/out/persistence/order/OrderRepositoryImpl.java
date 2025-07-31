@@ -35,6 +35,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
         // 상태 업데이트 (변경감지)
         entity.setStatus(order.getOrderStatus());
+        entity.setPaymentKey(order.getPaymentKey());
         for (OrderItemEntity item : entity.getOrderItems()) {
 //            item.setStatus(order.getOrderStatus());
             order.getOrderItems().stream()
