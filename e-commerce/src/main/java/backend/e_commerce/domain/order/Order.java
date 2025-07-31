@@ -21,12 +21,9 @@ public class Order {
     private final Payment payment; // 결제정보
 
 
-    public static Order createOrder(Long userId, Address address, List<OrderItem> orderItems, Payment payment) {
+    public static Order createOrder(Long userId, Address address, List<OrderItem> orderItems) {
         if (orderItems == null || orderItems.isEmpty()) {
             throw new IllegalArgumentException("주문 항목이 비어 있을 수 없습니다.");
-        }
-        if (payment == null) {
-            throw new IllegalArgumentException("결제 정보가 필요합니다.");
         }
 
         for (OrderItem orderItem : orderItems) {
@@ -40,7 +37,6 @@ public class Order {
                 .orderAddress(address)
                 .orderItems(orderItems)
                 .orderStatus(OrderStatus.PENDING_PAYMENT)
-                .payment(payment)
                 .build();
     }
 

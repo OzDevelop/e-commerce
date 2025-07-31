@@ -14,7 +14,7 @@ public class CreateOrderRequestDto {
 
     @Getter
     public static class OrderItemRequestDto {
-        private String productId;
+        private Long productId;
         private int quantity;
         private int unitPrice;
     }
