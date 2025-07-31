@@ -1,4 +1,4 @@
-package backend.e_commerce.representaion.request;
+package backend.e_commerce.representaion.request.user;
 
 import backend.e_commerce.application.command.user.RegisterUserCommand.AddressCommand;
 

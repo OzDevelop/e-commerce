@@ -1,4 +1,4 @@
-package backend.e_commerce.representaion.request;
+package backend.e_commerce.representaion.request.order;
 
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.user.Address;

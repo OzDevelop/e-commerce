@@ -1,11 +1,15 @@
 package backend.e_commerce.application.service;
 
+import backend.e_commerce.application.command.user.ChangePasswordCommand;
+import backend.e_commerce.application.command.user.RegisterAddressCommand;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
 import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.command.user.UpdateUserCommand;
+import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
+import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,10 +28,14 @@ public class UserService implements UserInfoCommandUserUseCase {
     }
 
     @Override
-    public User changePassword(Long userId, String newPassword) {
-        User user = userRepository.findById(userId);
+    public User changePassword(ChangePasswordCommand command) {
+        User user = userRepository.findById(command.getUserId());
 
-        User changedUser = user.changePassword(newPassword);
+        if (!user.getPassword().equals(command.getOldPassword())) {
+                // TODO -
+        }
+
+        User changedUser = user.changePassword(command.getNewPassword());
         return userRepository.save(changedUser);
     }
 
@@ -37,5 +45,25 @@ public class UserService implements UserInfoCommandUserUseCase {
 
         User changedUser = user.changeUserInfo(command.newName(), command.newPhone());
         return userRepository.save(changedUser);
+    }
+
+    @Override
+    @Transactional
+    public Address addAddress(RegisterAddressCommand command) {
+        Address newAddress = Address.addAddress(
+                command.getAddress(),
+                command.getAddressDetail(),
+                command.getZipCode(),
+                command.isDefault()
+        );
+
+        userRepository.addAddress(command.getUserId(), newAddress);
+        return newAddress;
+    }
+
+    @Override
+    @Transactional
+    public void removeAddress(Long userId, Long addressId) {
+        userRepository.removeAddress(userId, addressId);
     }
 }

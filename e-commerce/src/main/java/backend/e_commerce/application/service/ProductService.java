@@ -5,20 +5,34 @@ import backend.e_commerce.application.command.product.ProductCommandMapper;
 import backend.e_commerce.application.command.product.UpdateProductCommand;
 import backend.e_commerce.application.port.in.product.ProductCommandUseCase;
 import backend.e_commerce.application.port.out.ProductRepository;
+import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.product.ProductStatus;
+import backend.e_commerce.domain.user.User;
+import backend.e_commerce.domain.user.UserRole;
+import backend.e_commerce.infrastructure.out.persistence.product.ProductEntityMapper;
+import backend.e_commerce.infrastructure.out.persistence.product.entity.ProductEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductService implements ProductCommandUseCase {
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public Product createProduct(CreateProductCommand productCommand) {
-        Product product = ProductCommandMapper.toDomain(productCommand);
+    public Product createProduct(CreateProductCommand command) {
+        User seller = userRepository.findById(command.getSellerId());
+
+        if (!(seller.getRole() == UserRole.SELLER)) {
+            throw new IllegalStateException("User is not seller");
+        }
+
+        Product product = ProductCommandMapper.toDomain(command);
         return productRepository.save(product);
     }
 
@@ -28,6 +42,7 @@ public class ProductService implements ProductCommandUseCase {
                 .map(this::createProduct)
                 .toList();
 
+
         return productRepository.saveAll(products);
     }
 
@@ -36,8 +51,9 @@ public class ProductService implements ProductCommandUseCase {
         Product product = findProductByIdOrThrow(productId);
 
         ProductCommandMapper.applyUpdate(product, command);
+        ProductEntityMapper.fromDomain(product);
 
-        return product;
+        return productRepository.save(product);
     }
 
     @Override
@@ -54,6 +70,7 @@ public class ProductService implements ProductCommandUseCase {
         Product product = findProductByIdOrThrow(productId);
 
         product.changeStatus(productStatus);
+        productRepository.save(product);
     }
 
     @Override
@@ -61,6 +78,7 @@ public class ProductService implements ProductCommandUseCase {
         Product product = findProductByIdOrThrow(productId);
 
         product.increaseStock(quantity);
+        productRepository.save(product);
     }
 
     @Override
@@ -68,6 +86,7 @@ public class ProductService implements ProductCommandUseCase {
         Product product = findProductByIdOrThrow(productId);
 
         product.decreaseStock(quantity);
+        productRepository.save(product);
     }
 
     private Product findProductByIdOrThrow(Long productId) {

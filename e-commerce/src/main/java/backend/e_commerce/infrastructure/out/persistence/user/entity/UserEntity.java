@@ -65,6 +65,16 @@ public class UserEntity extends TimeBaseEntity {
         address.setUser(this);
     }
 
+    public void removeAddress(Long addressId) {
+        AddressEntity toRemove = this.addresses.stream()
+                .filter(addr -> addr.getId().equals(addressId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("주소를 찾을 수 없습니다."));
+
+        this.addresses.remove(toRemove);
+        toRemove.setUser(null); // 관계 제거
+    }
+
     public User toDomain() {
         List<Address> addressList = this.addresses.stream()
                 .map(AddressEntity::toDomain)

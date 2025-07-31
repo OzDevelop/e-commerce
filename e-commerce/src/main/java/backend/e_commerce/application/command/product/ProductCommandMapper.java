@@ -20,6 +20,7 @@ public class ProductCommandMapper {
     }
 
     public static void applyUpdate(Product product, UpdateProductCommand command) {
+        command.getCategory().ifPresent(product::changeCategory);
         command.getName().ifPresent(product::changeName);
         command.getDescription().ifPresent(product::changeDescription);
         command.getPrice().ifPresent(product::changePrice);
