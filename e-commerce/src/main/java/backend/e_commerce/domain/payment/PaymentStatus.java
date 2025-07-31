@@ -1,5 +1,7 @@
 package backend.e_commerce.domain.payment;
 
+import java.util.Arrays;
+
 public enum PaymentStatus {
     PENDING("결제 대기중"),
     COMPLETED("결제 완료"),
@@ -14,5 +16,12 @@ public enum PaymentStatus {
 
     PaymentStatus(String desc) {
         this.desc = desc;
+    }
+
+    public static PaymentStatus from(String status) {
+        return Arrays.stream(values())
+                .filter(s -> s.name().equalsIgnoreCase(status))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid PaymentStatus: " + status));
     }
 }
