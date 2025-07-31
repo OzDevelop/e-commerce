@@ -14,7 +14,6 @@ public class OrderEntityMapper {
                 .userId(order.getUserId())
                 .address(AddressEntityMapper.toEntity(order.getOrderAddress()))
                 .status(order.getOrderStatus())
-                .payment(PaymentEntityMapper.toEntity(order.getPayment()))
                 .build();
 
         List<OrderItemEntity> itemEntities = order.getOrderItems().stream()
@@ -33,7 +32,6 @@ public class OrderEntityMapper {
                 .userId(entity.getUserId())
                 .orderStatus(entity.getStatus())
                 .orderAddress(AddressEntityMapper.toDomain(entity.getAddress()))
-                .payment(PaymentEntityMapper.toDomain(entity.getPayment()))
                 .orderItems(entity.getOrderItems().stream()
                         .map(OrderItemEntityMapper::toDomain)
                         .collect(Collectors.toList()))

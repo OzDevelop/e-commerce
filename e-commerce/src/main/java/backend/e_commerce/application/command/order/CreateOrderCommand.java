@@ -31,7 +31,6 @@ public class CreateOrderCommand {
                 .userId(dto.getUserId())
                 .address(dto.getAddress())
                 .orderItems(orderItems)
-                .payment(dto.getPayment())
                 .build();
     }
 }

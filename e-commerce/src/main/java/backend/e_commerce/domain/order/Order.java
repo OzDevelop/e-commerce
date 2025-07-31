@@ -18,7 +18,7 @@ public class Order {
     private final Address orderAddress; // 배송지 주소
     private final List<OrderItem> orderItems; // 주문 상품
     private OrderStatus orderStatus; // 주문상태
-    private final Payment payment; // 결제정보
+    private String paymentKey;
 
 
     public static Order createOrder(Long userId, Address address, List<OrderItem> orderItems) {
@@ -45,12 +45,12 @@ public class Order {
             throw new IllegalStateException("주문이 처리중입니다.");
         }
 
-        if (!isPaymentSuccess()) {
-            throw new IllegalStateException("결제가 완료되지 않은 주문은 완료할 수 없습니다.");
-        }
-
         orderStatus = OrderStatus.COMPLETED;
         this.orderItems.forEach(item -> item.update(OrderStatus.COMPLETED));
+    }
+
+    public void setPaymentKey(String paymentKey) {
+        this.paymentKey = paymentKey;
     }
 
     // 특정 제품만 취소
@@ -73,9 +73,6 @@ public class Order {
             totalCancelAmount += item.getAmount();
         }
 
-
-        this.payment.cancel(totalCancelAmount);
-
         if (allItemsCancelled()) {
             this.orderStatus = OrderStatus.CANCELLED;
         }
@@ -86,16 +83,8 @@ public class Order {
             throw new IllegalStateException("이미 완료된 주문은 취소할 수 없습니다.");
         }
 
-        int totalCancelAmount = this.payment.getTotalAmount() - this.payment.getCanceledAmount();
-
-        this.payment.cancel(totalCancelAmount);
         this.orderStatus = OrderStatus.CANCELLED;
         this.orderItems.forEach(OrderItem::cancel);
-    }
-
-
-    private boolean isPaymentSuccess() {
-        return payment.isSuccess();
     }
 
 
