@@ -27,7 +27,7 @@ public class OrderItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String productId;
+    private Long productId;
 
     private int quantity;
     private int price;
