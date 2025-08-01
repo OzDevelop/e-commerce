@@ -33,4 +33,8 @@ public class PaymentEntity {
 
     private int totalAmount;
     private int canceledAmount;
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 }

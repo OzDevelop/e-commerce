@@ -5,7 +5,11 @@ import backend.e_commerce.domain.payment.PaymentMethod;
 import backend.e_commerce.domain.payment.PaymentStatus;
 import backend.e_commerce.infrastructure.out.pg.toss.response.payment.method.Cancel;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public class PaymentCancelResponseDto {
     private List<Cancel> cancels;
 
@@ -23,6 +27,7 @@ public class PaymentCancelResponseDto {
                 .paymentStatus(PaymentStatus.valueOf(status))
                 .totalAmount(totalAmount)
                 .balanceAmount(balanceAmount)
+                .payoutAmount(totalAmount-balanceAmount)
                 .build();
     }
 }
