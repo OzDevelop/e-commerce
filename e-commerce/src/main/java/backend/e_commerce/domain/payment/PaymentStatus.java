@@ -6,9 +6,10 @@ public enum PaymentStatus {
     PENDING("결제 대기중"),
     COMPLETED("결제 완료"),
     FAILED("결제 실패"),
-    CANCELLED("결제 취소"),
     REFUNDED("환불"),
-    DONE("완료")
+    DONE("완료"),
+    PARTIAL_CANCELED("부분 취소"),
+    CANCELED("취소"),
 
     ;
 
