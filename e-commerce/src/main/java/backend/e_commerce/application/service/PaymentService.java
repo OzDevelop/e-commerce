@@ -95,34 +95,77 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
                  product.decreaseStock(orderItem.getQuantity());
                  productRepository.update(product);
              });
-
-
             return "success";
         }
-
         return "fail";
     }
 
     @Override
+    @Transactional
     public boolean paymentCancel(PaymentCancelledCommand command) {
         String paymentKey = command.getPaymentKey();
+        int cancellationAmount = command.getCancellationAmount();   // 취소할 금액
 
         Order wantedCancelOrder = orderService.getOrderInfo(command.getOrderId());
-        PaymentLedger paymentLedger = getLastPaymentLedger(paymentKey);
-        if(!(wantedCancelOrder.getOrderStatus() == OrderStatus.COMPLETED)) {
-            PaymentCancelRequestDto requestDto = new PaymentCancelRequestDto(command.getCancelReason(), command.getCancellationAmount());
+
+        Payment paidPayment = paymentRepository.findById(paymentKey); // TODO - Payment 상태 취소, 부분취소 등으로 수정
+        PaymentLedger paymentLedger = getLastPaymentLedger(paymentKey); // TODO - ledger 에 취소 기록
+
+
+        if(!(wantedCancelOrder.getOrderStatus() == OrderStatus.PURCHASE_COMPLETED) && paymentLedger.isCancellable(cancellationAmount)) {
+            PaymentCancelRequestDto requestDto = command.toPaymentCancelRequestDto();
 
             PaymentCancelResponseDto responseDto = tossPayment.requestPaymentCancel(paymentKey, requestDto);
 
+            try {
+                System.out.println("PaymentCancelResponseDto 응답 전체: " + new ObjectMapper().writeValueAsString(responseDto));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            /**
+             * 1. ledger에 취소, 부분취소로 기록  (지금 변경이 안됨)
+             * 2. 상품 재고 다시 증가
+             * 3. 결제 상태 부분 취소, 취소로 변경  (지금 변경이 안됨)
+             * 4. orderItem Status 변경 (지금 변경이 안됨)
+             */
+
+            // 1.
             paymentLedgerRepository.save(responseDto.toPaymentLedgerDomain());
+
+            List<OrderItem> orderItems = wantedCancelOrder.getOrderItems();
+            Long[] itemIdsToCancel = command.getItemIds();
+
+            // 3.
+            if (itemIdsToCancel == null || itemIdsToCancel.length == 0) {
+                // 전체 취소 요청
+                paidPayment.setPaymentStatus(PaymentStatus.CANCELED);
+            } else {
+                if (itemIdsToCancel.length == wantedCancelOrder.getOrderItems().size()) {
+                    paidPayment.setPaymentStatus(PaymentStatus.CANCELED);
+                } else {
+                    paidPayment.setPaymentStatus(PaymentStatus.PARTIAL_CANCELED);
+                }
+            }
+            paymentRepository.update(paidPayment);
+
+            orderItems.forEach(orderItem -> {
+                Long productId = orderItem.getProductId();
+                Product product = productRepository.findById(productId)
+                        .orElseThrow();
+
+                product.increaseStock(orderItem.getQuantity());
+                productRepository.update(product);
+            });
 
             if(command.getItemIds() != null || command.getItemIds().length > 0 ) {
                 wantedCancelOrder.orderCancel(command.getItemIds());
             } else {
                 wantedCancelOrder.orderAllCancel();
             }
-            return true;
+            orderRepository.update(wantedCancelOrder);
 
+            return true;
         }
         return false;
     }
