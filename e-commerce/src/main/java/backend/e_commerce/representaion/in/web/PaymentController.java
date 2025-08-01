@@ -1,9 +1,12 @@
 package backend.e_commerce.representaion.in.web;
 
 import backend.e_commerce.application.command.payment.PaymentApprovedCommand;
+import backend.e_commerce.application.command.payment.PaymentCancelledCommand;
 import backend.e_commerce.application.port.in.payment.PaymentCommandUseCase;
 import backend.e_commerce.infrastructure.out.pg.toss.TossPayment;
+import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
 import backend.e_commerce.representaion.request.payment.PaymentConfirmRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,4 +51,18 @@ public class PaymentController {
 
         return paymentCommandUseCase.paymentApproved(command);
     }
+    @PostMapping("api/payment/cancel")
+    @ResponseBody
+    public boolean paymentCancel(@RequestBody PaymentCancelRequestDto requestDto) {
+        PaymentCancelledCommand command = requestDto.toCommand();
+
+        try {
+            System.out.println("PaymentCancelRequestDto 응답 전체: " + new ObjectMapper().writeValueAsString(requestDto));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return paymentCommandUseCase.paymentCancel(command);
+    }
+
 }
