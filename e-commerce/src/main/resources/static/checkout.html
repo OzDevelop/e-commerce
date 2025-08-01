@@ -45,7 +45,7 @@
         const coupon = document.getElementById("coupon-box");
         const amount = {
           currency: "KRW",
-          value: 50000,
+          value: Number(urlParams.get("amount")),
         };
         // ------  결제위젯 초기화 ------
         // TODO: clientKey는 개발자센터의 결제위젯 연동 키 > 클라이언트 키로 바꾸세요.
@@ -94,7 +94,7 @@
 
           await widgets.setAmount({
             currency: "KRW",
-            value: amount,
+            value: amount.value,
           });
         });
 
@@ -105,7 +105,7 @@
           // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
           widgets.requestPayment({
             orderId: orderId, // 주문ID
-            orderName: orderName, // 주문된 상품명
+            orderName: orderName, // 주문된 상품명,
             successUrl: window.location.origin + "/success",
             failUrl: window.location.origin + "/fail",
             // customerEmail: "fastcamp-y@gmail.com",
