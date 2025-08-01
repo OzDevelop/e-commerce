@@ -26,4 +26,20 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
         return PaymentEntityMapper.toDomain(paymentEntity);
     }
+
+    @Override
+    public Payment update(Payment payment) {
+        if(payment.getPaymentKey() == null) {
+            throw new IllegalArgumentException("Payment key is null");
+        }
+
+        PaymentEntity entity = jpaPaymentRepository.findById(payment.getPaymentKey())
+                        .orElseThrow(() -> new IllegalArgumentException("Payment not found"));
+
+        entity.setPaymentStatus(payment.getPaymentStatus());
+
+        System.out.println("entitiy.getPaymentStatus >> "+entity.getPaymentStatus());
+
+        return PaymentEntityMapper.toDomain(entity);
+    }
 }

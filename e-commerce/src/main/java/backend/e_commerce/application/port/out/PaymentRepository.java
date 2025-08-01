@@ -6,4 +6,6 @@ public interface PaymentRepository  {
     Payment save(Payment payment);
 
     Payment findById(String id);
+
+    Payment update(Payment payment);
 }
