@@ -183,4 +183,9 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     public PaymentLedger getLastPaymentLedger(String paymentKey) {
         return paymentLedgerRepository.findOneByPaymentKeyDesc(paymentKey);
     }
+
+    @Override
+    public List<PaymentLedger> getPaymentLedger(String paymentKey) {
+        return paymentLedgerRepository.findAllByPaymentKey(paymentKey);
+    }
 }

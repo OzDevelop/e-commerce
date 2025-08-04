@@ -2,6 +2,8 @@ package backend.e_commerce.infrastructure.out.persistence.payment;
 
 import backend.e_commerce.domain.payment.PaymentLedger;
 import backend.e_commerce.infrastructure.out.persistence.payment.entity.PaymentLedgerEntity;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PaymentLedgerMapper {
     public static PaymentLedgerEntity fromDomain(PaymentLedger paymentLedger) {
@@ -26,5 +28,11 @@ public class PaymentLedgerMapper {
                 .balanceAmount(paymentLedgerEntity.getBalanceAmount())
                 .payoutAmount(paymentLedgerEntity.getPayoutAmount())
                 .build();
+    }
+
+    public static List<PaymentLedger> toDomainList(List<PaymentLedgerEntity> entityList) {
+        return entityList.stream()
+                .map(PaymentLedgerMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
