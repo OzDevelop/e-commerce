@@ -14,14 +14,11 @@ import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.order.OrderStatus;
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.payment.PaymentLedger;
-import backend.e_commerce.domain.payment.PaymentMethod;
 import backend.e_commerce.domain.payment.PaymentStatus;
 import backend.e_commerce.domain.product.Product;
+import backend.e_commerce.infrastructure.out.persistence.payment.PaymentMapper;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentCancelResponseDto;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentConfirmResponseDto;
-import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
-import backend.e_commerce.representaion.request.payment.PaymentConfirmRequestDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -96,8 +93,8 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
         return paymentLedgerRepository.findAllByPaymentKey(paymentKey);
     }
 
-    /// ------------------------------------ Private Methods ------------------------------------ ///
 
+    /// ------------------------------------ Private Methods ------------------------------------ ///
     private void validatePendingOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow();
         OrderStatus status = order.getOrderStatus();
@@ -121,15 +118,7 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     private void savePaymentAndLedger(PaymentConfirmResponseDto responseDto) {
         paymentLedgerRepository.save(responseDto.toPaymentLedgerDomain());
 
-        // TODO - Mapper로 분리.
-        Payment payment = Payment.builder()
-                .paymentKey(responseDto.getPaymentKey())
-                .paymentMethod(PaymentMethod.fromMethodName(responseDto.getMethod()))
-                .paymentStatus(PaymentStatus.from(responseDto.getStatus()))
-                .totalAmount(responseDto.getTotalAmount())
-                .canceledAmount(0)
-                .build();
-
+        Payment payment = PaymentMapper.fromPaymentConfirmResponseDtoToPayment(responseDto);
         paymentRepository.save(payment);
     }
 

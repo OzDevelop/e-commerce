@@ -4,7 +4,7 @@ import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.infrastructure.out.persistence.product.entity.ProductEntity;
 
 public class ProductEntityMapper {
-    public static ProductEntity fromDomain(Product product) {
+    public static ProductEntity fromDomainToEntity(Product product) {
         return new ProductEntity(
                 product.getId(),
                 product.getSellerId(),
@@ -19,7 +19,7 @@ public class ProductEntityMapper {
         );
     }
 
-    public static Product toDomain(ProductEntity entity) {
+    public static Product fromEntityToDomain(ProductEntity entity) {
         return Product.builder()
                 .id(entity.getId())
                 .sellerId(entity.getSellerId())

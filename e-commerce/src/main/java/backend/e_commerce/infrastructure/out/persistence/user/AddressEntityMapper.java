@@ -4,8 +4,7 @@ import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
 
 public class AddressEntityMapper {
-       // Address
-    public static Address toDomain(AddressEntity entity) {
+    public static Address fromEntityToDomain(AddressEntity entity) {
         return new Address(
                 entity.getAddress(),
                 entity.getAddressDetail(),
@@ -14,7 +13,7 @@ public class AddressEntityMapper {
         );
     }
 
-    public static AddressEntity toEntity(Address address) {
+    public static AddressEntity fromDomainToEntity(Address address) {
         return AddressEntity.builder()
                 .address(address.getAddress())
                 .addressDetail(address.getAddressDetail())

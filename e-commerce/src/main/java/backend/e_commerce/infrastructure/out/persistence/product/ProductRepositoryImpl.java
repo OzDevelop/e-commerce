@@ -2,7 +2,6 @@ package backend.e_commerce.infrastructure.out.persistence.product;
 
 import backend.e_commerce.application.port.out.ProductRepository;
 import backend.e_commerce.domain.product.Product;
-import backend.e_commerce.domain.user.User;
 import backend.e_commerce.infrastructure.out.persistence.product.entity.ProductEntity;
 import java.util.List;
 import java.util.Optional;
@@ -17,21 +16,21 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product save(Product product) {
-        ProductEntity productEntity = ProductEntityMapper.fromDomain(product);
+        ProductEntity productEntity = ProductEntityMapper.fromDomainToEntity(product);
 
         jpaProductRepository.save(productEntity);
-        return ProductEntityMapper.toDomain(productEntity);
+        return ProductEntityMapper.fromEntityToDomain(productEntity);
     }
 
     @Override
     public List<Product> saveAll(List<Product> products) {
         List<ProductEntity> productEntities = products.stream()
-                .map(ProductEntityMapper::fromDomain)
+                .map(ProductEntityMapper::fromDomainToEntity)
                 .collect(Collectors.toList());
         jpaProductRepository.saveAll(productEntities);
 
         return productEntities.stream()
-                .map(ProductEntityMapper::toDomain)
+                .map(ProductEntityMapper::fromEntityToDomain)
                 .collect(Collectors.toList());
     }
 
@@ -42,13 +41,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         productEntity.setStock(product.getStock());
 
-        return ProductEntityMapper.toDomain(productEntity);
+        return ProductEntityMapper.fromEntityToDomain(productEntity);
     }
 
     @Override
     public Optional<Product> findById(Long productId) {
         return jpaProductRepository.findById(productId)
-                .map(ProductEntityMapper::toDomain);
+                .map(ProductEntityMapper::fromEntityToDomain);
     }
 
     @Override

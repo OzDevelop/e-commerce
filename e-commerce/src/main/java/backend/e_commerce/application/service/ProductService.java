@@ -11,7 +11,6 @@ import backend.e_commerce.domain.product.ProductStatus;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.domain.user.UserRole;
 import backend.e_commerce.infrastructure.out.persistence.product.ProductEntityMapper;
-import backend.e_commerce.infrastructure.out.persistence.product.entity.ProductEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,7 @@ public class ProductService implements ProductCommandUseCase {
         Product product = findProductByIdOrThrow(productId);
 
         ProductCommandMapper.applyUpdate(product, command);
-        ProductEntityMapper.fromDomain(product);
+        ProductEntityMapper.fromDomainToEntity(product);
 
         return productRepository.save(product);
     }

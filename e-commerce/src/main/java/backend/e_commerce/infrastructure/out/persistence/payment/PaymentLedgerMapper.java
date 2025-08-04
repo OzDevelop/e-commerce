@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PaymentLedgerMapper {
-    public static PaymentLedgerEntity fromDomain(PaymentLedger paymentLedger) {
+    public static PaymentLedgerEntity fromDomainToEntity(PaymentLedger paymentLedger) {
         return PaymentLedgerEntity.builder()
                 .paymentKey(paymentLedger.getPaymentKey())
                 .method(paymentLedger.getMethod())
@@ -18,7 +18,7 @@ public class PaymentLedgerMapper {
                 .build();
     }
 
-    public static PaymentLedger toDomain(PaymentLedgerEntity paymentLedgerEntity) {
+    public static PaymentLedger fromEntityToDomain(PaymentLedgerEntity paymentLedgerEntity) {
         return PaymentLedger.builder()
                 .paymentKey(paymentLedgerEntity.getPaymentKey())
                 .method(paymentLedgerEntity.getMethod())
@@ -30,9 +30,9 @@ public class PaymentLedgerMapper {
                 .build();
     }
 
-    public static List<PaymentLedger> toDomainList(List<PaymentLedgerEntity> entityList) {
+    public static List<PaymentLedger> fromEntityListToDomainList(List<PaymentLedgerEntity> entityList) {
         return entityList.stream()
-                .map(PaymentLedgerMapper::toDomain)
+                .map(PaymentLedgerMapper::fromEntityToDomain)
                 .collect(Collectors.toList());
     }
 }

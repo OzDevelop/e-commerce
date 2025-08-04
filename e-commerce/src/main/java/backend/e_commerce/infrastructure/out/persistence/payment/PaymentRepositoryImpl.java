@@ -13,10 +13,10 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     @Override
     public Payment save(Payment payment) {
-        PaymentEntity paymentEntity = PaymentEntityMapper.toEntity(payment);
+        PaymentEntity paymentEntity = PaymentMapper.fromDomainToEntity(payment);
 
         jpaPaymentRepository.save(paymentEntity);
-        return PaymentEntityMapper.toDomain(paymentEntity);
+        return PaymentMapper.fromEntityToDomain(paymentEntity);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         PaymentEntity paymentEntity = jpaPaymentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Payment not found"));
 
-        return PaymentEntityMapper.toDomain(paymentEntity);
+        return PaymentMapper.fromEntityToDomain(paymentEntity);
     }
 
     @Override
@@ -40,6 +40,6 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
         System.out.println("entitiy.getPaymentStatus >> "+entity.getPaymentStatus());
 
-        return PaymentEntityMapper.toDomain(entity);
+        return PaymentMapper.fromEntityToDomain(entity);
     }
 }
