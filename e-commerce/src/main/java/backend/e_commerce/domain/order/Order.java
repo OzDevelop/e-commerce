@@ -55,11 +55,14 @@ public class Order {
 
     // 특정 제품만 취소
     public void orderCancel(Long[] itemIds) {
-        if(this.orderStatus == OrderStatus.COMPLETED) {
+
+        if(this.orderStatus == OrderStatus.PURCHASE_COMPLETED) {
             throw new IllegalStateException("이미 완료된 주문은 취소할 수 없습니다.");
         }
 
         int totalCancelAmount = 0;
+
+        System.out.println("OrderItems: " + this.orderItems.stream().map(OrderItem::getId).toList());
 
         for(long orderItemId : itemIds) {
             OrderItem item = this.orderItems.stream()
@@ -79,7 +82,7 @@ public class Order {
     }
 
     public void orderAllCancel() {
-        if (this.orderStatus == OrderStatus.COMPLETED) {
+        if (this.orderStatus == OrderStatus.PURCHASE_COMPLETED) {
             throw new IllegalStateException("이미 완료된 주문은 취소할 수 없습니다.");
         }
 

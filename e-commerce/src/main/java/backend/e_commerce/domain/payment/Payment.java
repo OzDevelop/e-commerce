@@ -38,7 +38,7 @@ public class Payment {
     private boolean canCancel(int amount) {
         return amount > 0 &&
                 canceledAmount + amount <= totalAmount &&
-                paymentStatus != PaymentStatus.CANCELLED;
+                paymentStatus != PaymentStatus.CANCELED;
     }
 
     // 결제 취소,
@@ -50,11 +50,15 @@ public class Payment {
         this.canceledAmount += amount;
 
         if (this.canceledAmount == this.totalAmount) {
-            this.paymentStatus = PaymentStatus.CANCELLED;
+            this.paymentStatus = PaymentStatus.CANCELED;
         }
     }
 
     public boolean isSuccess() {
         return paymentStatus == PaymentStatus.COMPLETED;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

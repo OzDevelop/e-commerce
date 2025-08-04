@@ -2,9 +2,11 @@ package backend.e_commerce.infrastructure.out.persistence.payment;
 
 import backend.e_commerce.domain.payment.PaymentLedger;
 import backend.e_commerce.infrastructure.out.persistence.payment.entity.PaymentLedgerEntity;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PaymentLedgerMapper {
-    public static PaymentLedgerEntity fromDomain(PaymentLedger paymentLedger) {
+    public static PaymentLedgerEntity fromDomainToEntity(PaymentLedger paymentLedger) {
         return PaymentLedgerEntity.builder()
                 .paymentKey(paymentLedger.getPaymentKey())
                 .method(paymentLedger.getMethod())
@@ -16,7 +18,7 @@ public class PaymentLedgerMapper {
                 .build();
     }
 
-    public static PaymentLedger toDomain(PaymentLedgerEntity paymentLedgerEntity) {
+    public static PaymentLedger fromEntityToDomain(PaymentLedgerEntity paymentLedgerEntity) {
         return PaymentLedger.builder()
                 .paymentKey(paymentLedgerEntity.getPaymentKey())
                 .method(paymentLedgerEntity.getMethod())
@@ -26,5 +28,11 @@ public class PaymentLedgerMapper {
                 .balanceAmount(paymentLedgerEntity.getBalanceAmount())
                 .payoutAmount(paymentLedgerEntity.getPayoutAmount())
                 .build();
+    }
+
+    public static List<PaymentLedger> fromEntityListToDomainList(List<PaymentLedgerEntity> entityList) {
+        return entityList.stream()
+                .map(PaymentLedgerMapper::fromEntityToDomain)
+                .collect(Collectors.toList());
     }
 }

@@ -5,8 +5,7 @@ import backend.e_commerce.infrastructure.out.persistence.order.entity.OrderEntit
 import backend.e_commerce.infrastructure.out.persistence.order.entity.OrderItemEntity;
 
 public class OrderItemEntityMapper {
-    // OrderItem → OrderItemEntity
-    public static OrderItemEntity toEntity(OrderItem item, OrderEntity orderEntity) {
+    public static OrderItemEntity fromDomainToEntity(OrderItem item, OrderEntity orderEntity) {
         return OrderItemEntity.builder()
                 .id(item.getId())
                 .productId(item.getProductId())
@@ -17,9 +16,7 @@ public class OrderItemEntityMapper {
                 .build();
     }
 
-
-    // OrderItemEntity → OrderItem
-    public static OrderItem toDomain(OrderItemEntity entity) {
+    public static OrderItem fromEntityToDomain(OrderItemEntity entity) {
         return OrderItem.builder()
                 .id(entity.getId())
                 .productId(entity.getProductId())

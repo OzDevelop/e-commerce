@@ -18,10 +18,10 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Order save(Order order) {
-        OrderEntity orderEntity = OrderEntityMapper.toEntity(order);
+        OrderEntity orderEntity = OrderEntityMapper.fromDomainToEntity(order);
 
         OrderEntity saved = jpaOrderRepository.save(orderEntity);
-        return OrderEntityMapper.toDomain(saved);
+        return OrderEntityMapper.fromEntityToDomain(saved);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class OrderRepositoryImpl implements OrderRepository {
                     .ifPresent(domainItem -> item.setStatus(domainItem.getStatus()));
         }
 
-        return OrderEntityMapper.toDomain(entity);
+        return OrderEntityMapper.fromEntityToDomain(entity);
     }
 
     @Override
     public Optional<Order> findById(UUID id) {
-        return jpaOrderRepository.findById(id).map(OrderEntityMapper::toDomain);
+        return jpaOrderRepository.findById(id).map(OrderEntityMapper::fromEntityToDomain);
     }
 }

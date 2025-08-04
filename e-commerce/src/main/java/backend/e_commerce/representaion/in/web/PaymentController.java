@@ -1,16 +1,27 @@
 package backend.e_commerce.representaion.in.web;
 
 import backend.e_commerce.application.command.payment.PaymentApprovedCommand;
+import backend.e_commerce.application.command.payment.PaymentCancelledCommand;
 import backend.e_commerce.application.port.in.payment.PaymentCommandUseCase;
+import backend.e_commerce.application.port.in.payment.PaymentQueryUseCase;
+import backend.e_commerce.domain.payment.PaymentLedger;
 import backend.e_commerce.infrastructure.out.pg.toss.TossPayment;
+import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentCancelResponseDto;
+import backend.e_commerce.infrastructure.out.pg.toss.response.payment.PaymentLedgerResponseDto;
+import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
 import backend.e_commerce.representaion.request.payment.PaymentConfirmRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PaymentController {
 
     private final PaymentCommandUseCase paymentCommandUseCase;
+    private final PaymentQueryUseCase paymentQueryUseCase;
 
     @GetMapping("/success")
     public String paymentConfirm(
@@ -47,4 +59,24 @@ public class PaymentController {
 
         return paymentCommandUseCase.paymentApproved(command);
     }
+    @PostMapping("api/payment/cancel")
+    @ResponseBody
+    public boolean paymentCancel(@RequestBody PaymentCancelRequestDto requestDto) {
+        PaymentCancelledCommand command = requestDto.toCommand();
+
+        try {
+            System.out.println("PaymentCancelRequestDto 응답 전체: " + new ObjectMapper().writeValueAsString(requestDto));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return paymentCommandUseCase.paymentCancel(command);
+    }
+
+    @GetMapping("api/payments/{paymentKey}/ledgers")
+    public ResponseEntity<List<PaymentLedgerResponseDto>> getPaymentLedgerList(@PathVariable String paymentKey) {
+        List<PaymentLedger> ledgers = paymentQueryUseCase.getPaymentLedger(paymentKey);
+        return ResponseEntity.ok(PaymentLedgerResponseDto.fromList(ledgers));
+    }
+
 }
