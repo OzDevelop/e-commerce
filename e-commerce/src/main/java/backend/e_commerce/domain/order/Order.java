@@ -49,6 +49,11 @@ public class Order {
         this.orderItems.forEach(item -> item.update(OrderStatus.COMPLETED));
     }
 
+    public void completeDelivery() {
+        orderStatus = OrderStatus.PURCHASE_COMPLETED;
+        this.orderItems.forEach(item -> item.update(OrderStatus.PURCHASE_COMPLETED));
+    }
+
     public void setPaymentKey(String paymentKey) {
         this.paymentKey = paymentKey;
     }
