@@ -51,4 +51,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     public Optional<Order> findById(UUID id) {
         return jpaOrderRepository.findById(id).map(OrderEntityMapper::fromEntityToDomain);
     }
+
+    @Override
+    public Optional<OrderEntity> findByOrderId(UUID id) {
+        return jpaOrderRepository.findById(id);
+    }
 }
