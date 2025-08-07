@@ -28,18 +28,23 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             System.out.println("Authentication set: " + authentication.getName());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("Authorities in Authentication: " + authentication.getAuthorities());
+
+
+
         } else {
             System.out.println("Invalid or missing token");
 
         }
 
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         chain.doFilter(request, response);
     }
 
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;

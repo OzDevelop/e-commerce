@@ -18,7 +18,18 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(() -> user.getUserRole());
+        String role = user.getUserRole();
+
+        // 이미 "ROLE_"이 붙어있지 않다면 붙이기
+        if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+
+        System.out.println("User role in CustomUserDetails: " + role);
+
+        String finalRole = role;
+        return Collections.singleton(() -> finalRole);
+
     }
 
     @Override

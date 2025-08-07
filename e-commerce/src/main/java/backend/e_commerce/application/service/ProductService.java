@@ -26,8 +26,9 @@ public class ProductService implements ProductCommandUseCase {
     @Override
     public Product createProduct(CreateProductCommand command) {
         User seller = userRepository.findById(command.getSellerId());
+        System.out.println(">>> seller.getRole(): " + seller.getRole());
 
-        if (!(seller.getRole() == UserRole.SELLER)) {
+        if (!UserRole.SELLER.equals(seller.getRole())) {
             throw new IllegalStateException("User is not seller");
         }
 
