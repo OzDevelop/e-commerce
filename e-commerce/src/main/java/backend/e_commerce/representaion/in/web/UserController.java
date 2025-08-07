@@ -1,15 +1,20 @@
 package backend.e_commerce.representaion.in.web;
 
+import backend.core.common.JwtToken;
 import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
+import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.representaion.request.user.ChangePasswordRequestDto;
+import backend.e_commerce.representaion.request.user.LoginRequestDto;
 import backend.e_commerce.representaion.request.user.RegisterAddressRequestDto;
 import backend.e_commerce.representaion.request.user.RegisterUserRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserInfoCommandUserUseCase userInfoCommandUserUseCase;
+
+    private final PasswordEncoder passwordEncoder;
+
 
     @PostMapping("/register")
     //TODO - 공통 Response 객체 구현 시 변경 예정
@@ -30,7 +39,44 @@ public class UserController {
     public User registerUser(@RequestBody RegisterUserRequestDto request) {
         RegisterUserCommand command = request.toRegisterUserCommand();
 
+
+
         return userInfoCommandUserUseCase.registerUser(command);
+    }
+
+    @PostMapping("/login")
+    public JwtToken loginUser(@RequestBody LoginRequestDto request) {
+        String email = request.getEmail();
+        String password = request.getPassword();
+
+
+        // 비밀번호 매칭 여부 테스트
+        boolean matched = passwordEncoder.matches(request.getPassword() , "$2a$10$HAiorqaulkDTykEjsGNRqesQmseTieWF/98ShnegOqVOM/bB4.vvO");
+        System.out.println(">>> password matched? " + matched);
+
+
+
+        System.out.println(">>> loginUser email: " + request.getEmail());
+        System.out.println(">>> loginUser password(raw): " + request.getPassword());
+        System.out.println(">>> loginUser password(encoded): " + passwordEncoder.encode(request.getPassword()) );
+
+        System.out.println(">>> password matched? " + matched);
+
+        JwtToken jwtToken = null;
+
+        try {
+            jwtToken = userInfoCommandUserUseCase.loginUser(request.getEmail(), request.getPassword());
+            System.out.println("Token generated: accessToken=" + jwtToken.getAccessToken() + ", refreshToken=" + jwtToken.getRefreshToken());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+//        JwtToken jwtToken = userInfoCommandUserUseCase.loginUser(email, password);
+//
+//        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+
+        return jwtToken;
     }
 
     //TODO - User 정보 수정
