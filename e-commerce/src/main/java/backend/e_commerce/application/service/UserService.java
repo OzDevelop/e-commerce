@@ -1,5 +1,7 @@
 package backend.e_commerce.application.service;
 
+import backend.core.common.JwtToken;
+import backend.core.common.JwtTokenProvider;
 import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
@@ -12,6 +14,11 @@ import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEnti
 import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +26,32 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService implements UserInfoCommandUserUseCase {
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;  // 변경됨
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public User registerUser(RegisterUserCommand command) {
         User user = command.toDomain();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        System.out.println("encodedPassword = " + encodedPassword);
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public JwtToken loginUser(String email, String password) {
+    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+        System.out.println("authentication.getName()" + authentication.getName());
+
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+
+        return jwtToken;
     }
 
     @Override

@@ -6,6 +6,7 @@ import backend.e_commerce.domain.user.User;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,7 +17,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
+        System.out.println(user.getPassword());
         UserEntity userEntity =  UserEntity.create(user);
+
+        System.out.println("userEntity.getPassword()"+userEntity.getPassword());
 
         userEntity = jpaUserRepository.save(userEntity);
         return userEntity.toDomain();
@@ -26,7 +30,14 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(Long userId) {
         UserEntity userEntity = jpaUserRepository
                 .findById(userId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + id));
+        return userEntity.toDomain();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        UserEntity userEntity = jpaUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return userEntity.toDomain();
     }
 
