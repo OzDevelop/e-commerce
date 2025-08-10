@@ -18,6 +18,9 @@ public class ErrorResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<ValidationError> errors;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final Object details; // 추가 데이터 (userId 등)
+
     @Getter
     @Builder
     @RequiredArgsConstructor

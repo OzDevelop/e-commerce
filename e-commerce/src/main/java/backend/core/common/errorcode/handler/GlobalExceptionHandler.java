@@ -3,6 +3,8 @@ package backend.core.common.errorcode.handler;
 import backend.core.common.errorcode.ErrorResponse;
 import backend.core.common.errorcode.errorcode.ErrorCode;
 import backend.core.common.errorcode.execption.RestApiException;
+import backend.core.common.errorcode.execption.UserException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +31,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
                 .build();
+    }
+
+
+    // User Exception
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<Object> handleUserException(UserException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ErrorResponse.builder()
+                        .code(errorCode.name())
+                        .message(errorCode.getMessage())
+                        .details(Map.of("userId", e.getDetails()))
+                        .build()
+                );
     }
 }
