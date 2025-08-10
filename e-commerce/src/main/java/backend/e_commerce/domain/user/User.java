@@ -12,7 +12,7 @@ public class User {
     private final Long id;
 
     private final String email;
-    private final String password;
+    private  String password;
 
     private final String name;
     private final String phone;
@@ -29,5 +29,13 @@ public class User {
 
     public User changeUserInfo(String newName, String newPhone) {
         return new User(this.id, this.email, this.password, newName, newPhone, this.role, this.addresses);
+    }
+
+    public String getUserRole() {
+        return this.role.name();
+    }
+
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
     }
 }

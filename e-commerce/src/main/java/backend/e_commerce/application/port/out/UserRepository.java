@@ -7,6 +7,7 @@ import backend.e_commerce.domain.user.User;
 public interface UserRepository {
     User save(User user);
     User findById(Long userId);
+    User findByEmail(String email);
 
     void addAddress(Long userId, Address address);
     void removeAddress(Long userId, Long addressId);

@@ -9,7 +9,7 @@ import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEnti
 import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,6 +23,8 @@ public class UserRepositoryImpl implements UserRepository {
         System.out.println(user.getPassword());
         UserEntity userEntity =  UserEntity.create(user);
 
+        System.out.println("userEntity.getPassword()"+userEntity.getPassword());
+
         userEntity = jpaUserRepository.save(userEntity);
         return userEntity.toDomain();
     }
@@ -32,7 +34,6 @@ public class UserRepositoryImpl implements UserRepository {
         UserEntity userEntity = jpaUserRepository
                 .findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND, Map.of("userId", userId)));
-
         return userEntity.toDomain();
     }
 
