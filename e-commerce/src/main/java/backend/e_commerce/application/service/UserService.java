@@ -2,6 +2,8 @@ package backend.e_commerce.application.service;
 
 import backend.core.common.JwtToken;
 import backend.core.common.JwtTokenProvider;
+import backend.core.common.errorcode.errorcode.UserErrorCode;
+import backend.core.common.errorcode.execption.UserException;
 import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
@@ -13,6 +15,7 @@ import backend.e_commerce.application.command.user.UpdateUserCommand;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,7 +62,7 @@ public class UserService implements UserInfoCommandUserUseCase {
         User user = userRepository.findById(command.getUserId());
 
         if (!user.getPassword().equals(command.getOldPassword())) {
-                // TODO -
+            throw new UserException(UserErrorCode.INVALID_PASSWORD, Map.of("message", "기존 비밀번호와 동일합니다."));
         }
 
         User changedUser = user.changePassword(command.getNewPassword());
