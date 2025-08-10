@@ -1,5 +1,7 @@
 package backend.e_commerce.application.service;
 
+import backend.core.common.errorcode.errorcode.ProductErrorCode;
+import backend.core.common.errorcode.execption.ProductException;
 import backend.e_commerce.application.command.product.CreateProductCommand;
 import backend.e_commerce.application.command.product.ProductCommandMapper;
 import backend.e_commerce.application.command.product.UpdateProductCommand;
@@ -12,6 +14,7 @@ import backend.e_commerce.domain.user.User;
 import backend.e_commerce.domain.user.UserRole;
 import backend.e_commerce.infrastructure.out.persistence.product.ProductEntityMapper;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +31,9 @@ public class ProductService implements ProductCommandUseCase {
         User seller = userRepository.findById(command.getSellerId());
 
         if (!(seller.getRole() == UserRole.SELLER)) {
-            throw new IllegalStateException("User is not seller");
+            throw new ProductException(ProductErrorCode.USER_NOT_SELLER,
+                    Map.of("userId", seller.getId(), "role", seller.getRole())
+            );
         }
 
         Product product = ProductCommandMapper.toDomain(command);
@@ -58,7 +63,8 @@ public class ProductService implements ProductCommandUseCase {
     @Override
     public void deleteProduct(Long productId) {
         if (!productRepository.existsById(productId)) {
-            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+            throw new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND,
+                    Map.of("productId", productId));
         }
 
         productRepository.deleteById(productId);
@@ -90,6 +96,7 @@ public class ProductService implements ProductCommandUseCase {
 
     private Product findProductByIdOrThrow(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND,
+                        Map.of("productId", productId)));
     }
 }
