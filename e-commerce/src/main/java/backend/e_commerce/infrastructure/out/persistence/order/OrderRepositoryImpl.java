@@ -1,5 +1,7 @@
 package backend.e_commerce.infrastructure.out.persistence.order;
 
+import backend.core.common.errorcode.errorcode.OrderErrorCode;
+import backend.core.common.errorcode.execption.OrderException;
 import backend.e_commerce.application.port.out.OrderRepository;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.infrastructure.out.persistence.order.entity.OrderEntity;
@@ -27,11 +29,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Order update(Order order) {
         if (order.getId() == null) {
-            throw new IllegalArgumentException("Order id is null.");
+            throw new OrderException(OrderErrorCode.ORDER_NOT_FOUND);
         }
 
         OrderEntity entity = jpaOrderRepository.findById(order.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
 
         // 상태 업데이트 (변경감지)
         entity.setStatus(order.getOrderStatus());

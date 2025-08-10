@@ -1,5 +1,7 @@
 package backend.e_commerce.application.service;
 
+import backend.core.common.errorcode.errorcode.OrderErrorCode;
+import backend.core.common.errorcode.execption.OrderException;
 import backend.e_commerce.application.command.order.CreateOrderCommand;
 import backend.e_commerce.application.port.in.order.OrderCommandUseCase;
 import backend.e_commerce.application.port.out.OrderRepository;
@@ -9,6 +11,7 @@ import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.product.ProductStatus;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,7 +45,7 @@ public class OrderService implements OrderCommandUseCase {
     @Transactional
     public void complete(UUID orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
         order.completeOrder();
 
         orderRepository.update(order);
@@ -52,7 +55,7 @@ public class OrderService implements OrderCommandUseCase {
     @Transactional
     public void cancelItem(UUID orderId, Long[] orderItemId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
 
         order.orderCancel(orderItemId);
 
@@ -63,29 +66,34 @@ public class OrderService implements OrderCommandUseCase {
     @Transactional
     public void cancelAll(UUID orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
         order.orderAllCancel();
         orderRepository.update(order);
     }
 
     public Order getOrderInfo(UUID orderId) {
-        return orderRepository.findById(orderId).orElseThrow(
-                () -> new IllegalArgumentException("Order not found"));
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
+
     }
 
     /** -- Private Method -- **/
     private OrderItem validateOrderItem(OrderItem item) {
         Product product = productRepository.findById(item.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.ID: " + item.getProductId()));
+                .orElseThrow(() -> new OrderException(OrderErrorCode.PRODUCT_NOT_FOUND,
+                        Map.of("productId", item.getProductId())));
 
         if (!item.hasSufficientStock(product.getStock())) {
-            throw new IllegalStateException("재고가 부족한 상품입니다. ID: " + product.getId());
+            throw new OrderException(OrderErrorCode.INSUFFICIENT_STOCK,
+                    Map.of("productId", product.getId(), "stock", product.getStock()));
         }
         if (product.getStatus() == ProductStatus.DISCONTINUED) {
-            throw new IllegalStateException("판매 종료된 상품입니다. ID: " + product.getId());
+            throw new OrderException(OrderErrorCode.PRODUCT_DISCONTINUED,
+                    Map.of("productId", product.getId()));
         }
         if (product.getStatus() == ProductStatus.OUT_OF_STOCK) {
-            throw new IllegalStateException("품절된 상품입니다. ID: " + product.getId());
+            throw new OrderException(OrderErrorCode.PRODUCT_OUT_OF_STOCK,
+                    Map.of("productId", product.getId()));
         }
 
         return OrderItem.builder()
