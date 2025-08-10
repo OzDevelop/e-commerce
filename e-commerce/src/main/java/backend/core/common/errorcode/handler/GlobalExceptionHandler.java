@@ -15,34 +15,32 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+//    @ExceptionHandler(RestApiException.class)
+//    public ResponseEntity<Object> handleCustomException(RestApiException e) {
+//        ErrorCode errorCode = e.getErrorCode();
+//        return handleExceptionInternal(errorCode);
+//    }
+//
+//    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
+//        return ResponseEntity.status(errorCode.getHttpStatus())
+//                .body(makeErrorResponse(errorCode));
+//    }
+//
+//    private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
+//        return ErrorResponse.builder()
+//                .code(errorCode.name())
+//                .message(errorCode.getMessage())
+//                .build();
+//    }
+
     @ExceptionHandler(RestApiException.class)
-    public ResponseEntity<Object> handleCustomException(RestApiException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        return handleExceptionInternal(errorCode);
-    }
-
-    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
-    }
-
-    private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
-        return ErrorResponse.builder()
-                .code(errorCode.name())
-                .message(errorCode.getMessage())
-                .build();
-    }
-
-
-    // User Exception
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<Object> handleUserException(UserException e) {
+    public ResponseEntity<Object> handleUserException(RestApiException e) {
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(ErrorResponse.builder()
                         .code(errorCode.name())
                         .message(errorCode.getMessage())
-                        .details(Map.of("userId", e.getDetails()))
+                        .details(e.getDetails())
                         .build()
                 );
     }
