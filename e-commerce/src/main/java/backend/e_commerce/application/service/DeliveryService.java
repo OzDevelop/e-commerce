@@ -1,5 +1,7 @@
 package backend.e_commerce.application.service;
 
+import backend.core.common.errorcode.errorcode.DeliveryErrorCode;
+import backend.core.common.errorcode.execption.DeliveryException;
 import backend.e_commerce.application.command.delivery.CreateDeliveryCommand;
 import backend.e_commerce.application.command.delivery.StartShippingCommand;
 import backend.e_commerce.application.port.in.Delivery.DeliveryCommandUseCase;
@@ -15,6 +17,7 @@ import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEnti
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +37,10 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
     @Override
     public Delivery createDelivery(CreateDeliveryCommand command) {
         AddressEntity addressEntity = jpaAddressRepository.findById(command.getAddressId())
-                .orElseThrow();
+                .orElseThrow(() -> new DeliveryException(
+                        DeliveryErrorCode.ADDRESS_NOT_FOUND,
+                        Map.of("addressId", command.getAddressId())
+                ));
 
         log.info("CreateDeliveryCommand 수신: orderId={}, addressId={}, receiverName={}, receiverPhone={}",
                 command.getOrderId(), command.getAddressId(),
@@ -59,6 +65,11 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
     public Delivery startShipping(StartShippingCommand command) {
         Delivery delivery = deliveryRepository.findById(command.getDeliveryId());
 
+        if (delivery == null) {
+            throw new DeliveryException(DeliveryErrorCode.DELIVERY_NOT_FOUND,
+                    Map.of("deliveryId", command.getDeliveryId()));
+        }
+
         System.out.println("delivery.getId >> "+delivery.getId());
 
         delivery = delivery.startShipping(command.getTrackingNumber(), command.getDeliveryCompany(), LocalDateTime.now());
@@ -70,8 +81,6 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
         System.out.println(delivery.getStatus());
         System.out.println(delivery.getShippedAt());
 
-
-
         return deliveryRepository.update(delivery);
     }
 
@@ -81,8 +90,13 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
 
         delivery = delivery.completeDelivery(LocalDateTime.now());
 
+        UUID orderId = delivery.getOrderId();
+
         Order order = orderRepository.findById(delivery.getOrderId())
-                .orElseThrow();
+                .orElseThrow(() -> new DeliveryException(
+                        DeliveryErrorCode.DELIVERY_NOT_FOUND,
+                        Map.of("orderId", orderId)
+                ));
 
         order.completeDelivery();
         orderRepository.update(order);
@@ -93,11 +107,18 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
     @Override
     public Delivery changeAddress(Long deliveryId, Long addressId) {
         Delivery delivery = deliveryRepository.findById(deliveryId);
-
+        if (delivery == null) {
+            throw new DeliveryException(DeliveryErrorCode.DELIVERY_NOT_FOUND,
+                    Map.of("deliveryId", deliveryId));
+        }
         // TODO - 해당 User id 검증 로직 추가
 
+
         AddressEntity addressEntity = jpaAddressRepository.findById(addressId)
-                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + addressId));
+                .orElseThrow(() -> new DeliveryException(
+                        DeliveryErrorCode.ADDRESS_NOT_FOUND,
+                        Map.of("addressId", addressId))
+                );
         Address newAddress = AddressEntityMapper.fromEntityToDomain(addressEntity);
 
         delivery = delivery.changeAddress(newAddress);

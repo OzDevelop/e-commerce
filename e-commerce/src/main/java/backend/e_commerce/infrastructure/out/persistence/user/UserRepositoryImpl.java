@@ -1,11 +1,15 @@
 package backend.e_commerce.infrastructure.out.persistence.user;
 
+import backend.core.common.errorcode.errorcode.UserErrorCode;
+import backend.core.common.errorcode.execption.UserException;
 import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,6 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
+        System.out.println(user.getPassword());
         UserEntity userEntity =  UserEntity.create(user);
 
         userEntity = jpaUserRepository.save(userEntity);
@@ -26,14 +31,23 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(Long userId) {
         UserEntity userEntity = jpaUserRepository
                 .findById(userId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND, Map.of("userId", userId)));
+
         return userEntity.toDomain();
     }
+
+//    @Override
+//    public User findByEmail(String email) {
+//        UserEntity userEntity = jpaUserRepository.findByEmail(email)
+//                .
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+//        return userEntity.toDomain();
+//    }
 
     @Override
     public void addAddress(Long userId, Address address) {
         UserEntity userEntity = jpaUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND, Map.of("userId", userId)));
 
         AddressEntity addressEntity = AddressEntity.create(address);
         userEntity.addAddress(addressEntity);
@@ -42,9 +56,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void removeAddress(Long userId, Long addressId) {
         UserEntity userEntity = jpaUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + userId + " not found"));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND, Map.of("userId", userId)));
 
         userEntity.removeAddress(addressId);
     }
-
 }

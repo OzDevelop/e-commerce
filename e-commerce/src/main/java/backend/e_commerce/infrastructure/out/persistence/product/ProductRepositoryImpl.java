@@ -1,9 +1,12 @@
 package backend.e_commerce.infrastructure.out.persistence.product;
 
+import backend.core.common.errorcode.errorcode.ProductErrorCode;
+import backend.core.common.errorcode.execption.ProductException;
 import backend.e_commerce.application.port.out.ProductRepository;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.infrastructure.out.persistence.product.entity.ProductEntity;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +40,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product update(Product product) {
         ProductEntity productEntity = jpaProductRepository.findById(product.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + product.getId()));
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND,
+                        Map.of("productId", product.getId())));
 
         productEntity.setStock(product.getStock());
 
