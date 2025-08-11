@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.command.user.RegisterUserCommand.AddressCommand;
 import backend.e_commerce.application.command.user.UpdateUserCommand;
@@ -19,17 +20,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
 
     private RegisterUserCommand registerUserCommand;
+    private ChangePasswordCommand changePasswordCommand;
     private Long userId;
     private User expectedUser;
 
@@ -37,6 +42,12 @@ class UserServiceTest {
     void setUp() {
         // given
         userId = 1L;
+
+        changePasswordCommand = new ChangePasswordCommand(
+                userId,
+                "password",
+                "password123"
+        );
 
         registerUserCommand = new RegisterUserCommand(
                 "test@example.com",
@@ -72,23 +83,28 @@ class UserServiceTest {
         // then
         assertEquals(expectedUser.getEmail(), result.getEmail());
         assertEquals(expectedUser.getName(), result.getName());
+
+        verify(passwordEncoder).encode(registerUserCommand.password());
         verify(userRepository).save(any(User.class));
     }
 
     @Test
     void 사용자_비밀번호변경_테스트() {
         // given
-        String newPassword = "newPassword";
+        String oldPassword = "password";
+        String newPassword = "password123";
 
         User existedUser = mock(User.class);
         User changeUser = mock(User.class);
 
+        given(existedUser.getPassword()).willReturn(oldPassword);
         given(userRepository.findById(userId)).willReturn(existedUser);
+
         given(existedUser.changePassword(newPassword)).willReturn(changeUser);
         given(userRepository.save(changeUser)).willReturn(changeUser);
 
         // when
-        User result = userService.changePassword(userId, newPassword);
+        User result = userService.changePassword(changePasswordCommand);
 
         // then
         assertEquals(changeUser, result);
@@ -118,8 +134,4 @@ class UserServiceTest {
         verify(existingUser).changeUserInfo(updateUserCommand.newName(), updateUserCommand.newPhone());
         verify(userRepository).save(changedUser);
     }
-
-
-
-
 }
