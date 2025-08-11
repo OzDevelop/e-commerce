@@ -16,11 +16,26 @@ public class ResponseWrapper implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+    public Object beforeBodyWrite(Object body,
+                                  MethodParameter returnType,
+                                  MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request, ServerHttpResponse response) {
-        if (body instanceof ErrorResponse)
-            return new ApiResponse<>("ERROR", body);
-        return new ApiResponse<>("SUCCESS", body);
+                                  ServerHttpRequest request, ServerHttpResponse response
+    ) {
+        String path = request.getURI().getPath();
+
+        if (body instanceof ErrorResponse) {
+            return ApiResponse.builder()
+                    .path(path)
+                    .status("ERROR")
+                    .body(body)
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .path(path)
+                .status("SUCCESS")
+                .body(body)
+                .build();
     }
 }
