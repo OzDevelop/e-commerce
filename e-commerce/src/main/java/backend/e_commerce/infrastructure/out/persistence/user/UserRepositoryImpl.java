@@ -37,13 +37,13 @@ public class UserRepositoryImpl implements UserRepository {
         return userEntity.toDomain();
     }
 
-//    @Override
-//    public User findByEmail(String email) {
-//        UserEntity userEntity = jpaUserRepository.findByEmail(email)
-//                .
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-//        return userEntity.toDomain();
-//    }
+    @Override
+    public User findByEmail(String email) {
+        UserEntity userEntity = jpaUserRepository.findByEmail(email)
+
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        return userEntity.toDomain();
+    }
 
     @Override
     public void addAddress(Long userId, Address address) {

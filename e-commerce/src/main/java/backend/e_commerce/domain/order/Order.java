@@ -1,5 +1,7 @@
 package backend.e_commerce.domain.order;
 
+import backend.core.common.errorcode.errorcode.OrderErrorCode;
+import backend.core.common.errorcode.execption.OrderException;
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.user.Address;
 import java.util.List;
@@ -44,6 +46,13 @@ public class Order {
         if(orderStatus == OrderStatus.PROCESSING) {
             throw new IllegalStateException("주문이 처리중입니다.");
         }
+
+        if(orderStatus == OrderStatus.COMPLETED) {
+            throw new OrderException(OrderErrorCode.ALREADY_COMPLETED);
+        }
+
+
+
 
         orderStatus = OrderStatus.COMPLETED;
         this.orderItems.forEach(item -> item.update(OrderStatus.COMPLETED));

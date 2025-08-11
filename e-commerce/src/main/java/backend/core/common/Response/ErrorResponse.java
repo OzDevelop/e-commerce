@@ -1,14 +1,39 @@
 package backend.core.common.Response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 
-@RequiredArgsConstructor
 @Getter
+@Builder
+@RequiredArgsConstructor
 public class ErrorResponse {
-    private final List<StackTraceElement> stackTraces;
+
+    private final String code;
     private final String message;
-    private final HttpStatus status;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final List<ValidationError> errors;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final Object details; // 추가 데이터 (userId 등)
+
+    @Getter
+    @Builder
+    @RequiredArgsConstructor
+    public static class ValidationError {
+
+        private final String field;
+        private final String message;
+
+        public static ValidationError of(final FieldError fieldError) {
+            return ValidationError.builder()
+                    .field(fieldError.getField())
+                    .message(fieldError.getDefaultMessage())
+                    .build();
+        }
+    }
 }
