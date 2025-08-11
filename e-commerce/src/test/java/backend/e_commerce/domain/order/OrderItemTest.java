@@ -12,9 +12,8 @@ class OrderItemTest {
 
     @BeforeEach
     void setUp() {
-        item = new OrderItem(1L, "P-1", 5, 5000);
+        item = new OrderItem(1L, 1L, 5, 5000);
     }
-
 
     @Test
     void 주문상품_초기상태_테스트() {

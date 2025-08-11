@@ -9,12 +9,15 @@ import static org.mockito.Mockito.when;
 
 import backend.e_commerce.application.command.order.CreateOrderCommand;
 import backend.e_commerce.application.port.out.OrderRepository;
+import backend.e_commerce.application.port.out.ProductRepository;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.order.OrderStatus;
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.payment.PaymentMethod;
 import backend.e_commerce.domain.payment.PaymentStatus;
+import backend.e_commerce.domain.product.Product;
+import backend.e_commerce.domain.product.ProductStatus;
 import backend.e_commerce.domain.user.Address;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,9 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private ProductRepository productRepository;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -46,8 +52,8 @@ class OrderServiceTest {
         address = new Address("서울", "강남대로", "12345", false);
 
         orderItems = List.of(
-                new OrderItem(1L, "P-1", 5, 5000),
-                new OrderItem(2L, "P-2", 10, 50000)
+                new OrderItem(1L, 1L, 5, 5000),
+                new OrderItem(2L, 2L, 10, 50000)
         );
 
         payment = new Payment(null, PaymentMethod.CREDIT_CARD, PaymentStatus.COMPLETED, 60000, 0);
@@ -62,14 +68,31 @@ class OrderServiceTest {
         realOrder = Order.createOrder(
                 createOrderCommand.getUserId(),
                 createOrderCommand.getAddress(),
-                createOrderCommand.getOrderItems(),
-                createOrderCommand.getPayment()
+                createOrderCommand.getOrderItems()
         );
     }
 
     @Test
     void 주문_생성_테스트() {
         when(orderRepository.save(any(Order.class))).thenReturn(realOrder);
+        when(productRepository.findById(any(Long.class))).thenAnswer(mock -> {
+            Long productId = mock.getArgument(0);
+
+            Product product = Product.builder()
+                    .id(productId)
+                    .sellerId(1L)
+                    .category("category")
+                    .name("Sample Product")
+                    .description("Sample Description")
+                    .price(10000)
+                    .stock(100)
+                    .status(ProductStatus.AVAILABLE)
+                    .brand("Brand")
+                    .manufacturer("Manufacturer")
+                    .build();
+
+            return Optional.of(product);
+        });
 
         Order result = orderService.createOrder(createOrderCommand);
 
@@ -110,7 +133,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_일부상품취소_테스트() {
-        Long cancelProductId = orderItems.get(0).getId();
+        Long[] cancelProductId = List.of(orderItems.get(0).getId()).toArray(new Long[0]);
 
         when(orderRepository.findById(realOrder.getId())).thenReturn(Optional.of(realOrder));
         when(orderRepository.update(any(Order.class))).thenReturn(realOrder);

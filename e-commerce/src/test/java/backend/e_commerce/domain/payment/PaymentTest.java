@@ -15,11 +15,11 @@ class PaymentTest {
 
     @BeforeEach
     void setUp() {
-        item1 = new OrderItem(1L, "product-1", 5, 10000);
-        item2 = new OrderItem(2L, "product-2", 5, 5000);
+        item1 = new OrderItem(1L, 1L, 5, 10000);
+        item2 = new OrderItem(2L, 2L, 5, 5000);
 
         payment = Payment.builder()
-                .paymentKey(1L)
+                .paymentKey("1L")
                 .paymentMethod(PaymentMethod.CREDIT_CARD)
                 .paymentStatus(PaymentStatus.PENDING)
                 .totalAmount(item1.getAmount() + item2.getAmount())
@@ -47,7 +47,7 @@ class PaymentTest {
         payment.cancel(75000);
 
         assertEquals(payment.getCanceledAmount(), 75000);
-        assertEquals(payment.getPaymentStatus(), PaymentStatus.CANCELLED);
+        assertEquals(payment.getPaymentStatus(), PaymentStatus.CANCELED);
     }
 
     @Test

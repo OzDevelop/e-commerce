@@ -1,10 +1,8 @@
 package backend.core.common.errorcode.handler;
 
-import backend.core.common.errorcode.ErrorResponse;
+import backend.core.common.Response.ErrorResponse;
 import backend.core.common.errorcode.errorcode.ErrorCode;
 import backend.core.common.errorcode.execption.RestApiException;
-import backend.core.common.errorcode.execption.UserException;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

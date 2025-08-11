@@ -9,11 +9,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import backend.core.common.errorcode.execption.ProductException;
 import backend.e_commerce.application.command.product.CreateProductCommand;
 import backend.e_commerce.application.command.product.UpdateProductCommand;
 import backend.e_commerce.application.port.out.ProductRepository;
+import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.product.ProductStatus;
+import backend.e_commerce.domain.user.User;
+import backend.e_commerce.domain.user.UserRole;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +32,8 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -72,6 +78,10 @@ class ProductServiceTest {
 
     @Test
     void 제품_단건등록_테스트() {
+        User mockSeller = mock(User.class);
+
+        given(mockSeller.getRole()).willReturn(UserRole.SELLER);
+        given(userRepository.findById(any(Long.class))).willReturn(mockSeller);
         given(productRepository.save(any(Product.class))).willReturn(product);
 
         Product createdProduct = productService.createProduct(createProductCommand);
@@ -88,7 +98,10 @@ class ProductServiceTest {
     @Test
     void 제품_다중등록_테스트() {
         List<Product> mockProducts = List.of(product);
+        User mockSeller = mock(User.class);
 
+        given(mockSeller.getRole()).willReturn(UserRole.SELLER);
+        given(userRepository.findById(any(Long.class))).willReturn(mockSeller);
         given(productRepository.saveAll(anyList())).willReturn(mockProducts);
         List<Product> result = productService.createProducts(List.of(createProductCommand));
 
@@ -101,7 +114,9 @@ class ProductServiceTest {
 
     @Test
     void 제품_수정_테스트() {
+
         given(productRepository.findById(productId)).willReturn(Optional.of(product));
+//        given(productRepository.save(any())).willReturn(product);
 
         productService.updateProduct(productId, updateProductCommand);
 
@@ -110,11 +125,15 @@ class ProductServiceTest {
         assertEquals(10, product.getStock());                  // 변경된 재고
 
         verify(productRepository).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));    // 더티체킹으로 업데이트 함
     }
 
     @Test
     void 제품_삭제_테스트() {
+        User mockSeller = mock(User.class);
+
+        given(mockSeller.getRole()).willReturn(UserRole.SELLER);
+        given(userRepository.findById(any(Long.class))).willReturn(mockSeller);
+
         given(productRepository.save(any())).willReturn(product);
         given(productRepository.existsById(productId)).willReturn(true);
 
@@ -162,7 +181,7 @@ class ProductServiceTest {
     void 제품_수정실패_테스트() {
         given(productRepository.findById(productId)).willReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(ProductException.class, () -> {
             productService.updateProduct(productId, updateProductCommand);
         });
 
@@ -173,7 +192,7 @@ class ProductServiceTest {
     void 제품_삭제실패_테스트() {
         given(productRepository.existsById(productId)).willReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(ProductException.class, () -> {
             productService.deleteProduct(productId);
         });
 

@@ -12,7 +12,10 @@ public enum OrderErrorCode implements ErrorCode {
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품이 존재하지 않습니다."),
     INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족한 상품입니다."),
     PRODUCT_DISCONTINUED(HttpStatus.BAD_REQUEST, "판매 종료된 상품입니다."),
-    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "품절된 상품입니다.");
+    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "품절된 상품입니다."),
+    ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, "이미 완료된 주문입니다.")
+
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;
