@@ -34,7 +34,7 @@ public class Cart {
 
         if (existingItem.isPresent()) {
             CartItem item = existingItem.get();
-            item.changeQuantity(quantity);
+            item.changeQuantity(item.getQuantity() + quantity);
         } else {
             CartItem newItem = CartItem.builder()
                     .id(null)
