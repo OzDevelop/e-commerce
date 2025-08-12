@@ -6,6 +6,7 @@ import backend.core.common.errorcode.errorcode.UserErrorCode;
 import backend.core.common.errorcode.execption.UserException;
 import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
+import backend.e_commerce.application.port.in.cart.CartCommandUseCase;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
 import backend.e_commerce.application.port.out.CartRepository;
 import backend.e_commerce.application.port.out.UserRepository;
@@ -32,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements UserInfoCommandUserUseCase {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
+
+    private final CartCommandUseCase cartCommandUseCase;
+
     private final AuthenticationManager authenticationManager;  // 변경됨
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
@@ -46,10 +50,8 @@ public class UserService implements UserInfoCommandUserUseCase {
 
         User savedUser = userRepository.save(user);
 
-        //TODO - CartService 가져와 사용.
-        Cart emptyCart = Cart.create(savedUser.getId()); // 도메인 Cart 생성
+        cartCommandUseCase.createCart(savedUser.getId());
 
-        cartRepository.save(emptyCart);
         return savedUser;
     }
 
