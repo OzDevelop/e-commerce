@@ -9,7 +9,12 @@ import org.springframework.http.HttpStatus;
 public enum PaymentErrorCode implements ErrorCode {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제 정보를 찾을 수 없습니다."),
     PAYMENT_KEY_NULL(HttpStatus.BAD_REQUEST, "결제 키가 null입니다."),
-    PAYMENT_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제 정보 업데이트에 실패했습니다.");
+    PAYMENT_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제 정보 업데이트에 실패했습니다."),
+
+    PAYMENT_ID_INTEGRITY(HttpStatus.BAD_REQUEST, "결제 응답의 주문 ID가 DB와 일치하지 않습니다."),
+    PAYMENT_AMOUNT_INTEGRITY(HttpStatus.BAD_REQUEST, "결제 금액이 일치하지 않습니다."),
+
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;

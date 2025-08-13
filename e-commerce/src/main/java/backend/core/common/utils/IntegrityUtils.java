@@ -1,5 +1,6 @@
 package backend.core.common.utils;
 
+import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.infrastructure.out.persistence.order.entity.OrderEntity;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -7,17 +8,17 @@ import org.springframework.security.core.parameters.P;
 
 public class IntegrityUtils {
 
-    public static String calculateHash(OrderEntity orderEntity) {
+    public static String calculateHash(Order order) {
         StringBuilder sb = new StringBuilder();
-        sb.append(orderEntity.getId());
-        orderEntity.getOrderItems().forEach(item -> {
+        sb.append(order.getId());
+        order.getOrderItems().forEach(item -> {
             sb.append(item.getId())
                     .append(item.getQuantity())
-                    .append(item.getPrice());
+                    .append(item.getAmount());
 
         });
 
-        sb.append(orderEntity.getAddress().toString());
+        sb.append(order.getOrderAddress().toString());
         return sha256(sb.toString());
 
     }

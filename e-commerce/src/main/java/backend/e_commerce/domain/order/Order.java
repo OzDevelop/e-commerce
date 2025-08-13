@@ -114,4 +114,8 @@ public class Order {
     public void setIntegrityHash(String integrityHash) {
         this.integrityHash = integrityHash;
     }
+
+    public void calculateAndSetIntegrityHash() {
+        this.integrityHash = IntegrityUtils.calculateHash(this);
+    }
 }

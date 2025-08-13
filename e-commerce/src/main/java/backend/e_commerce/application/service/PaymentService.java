@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCase {
     private final PaymentAPIs tossPayment;
     private final OrderService orderService;
+    private final SecurityService securityService;
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
@@ -51,12 +52,9 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
             return "fail";
         }
 
-        Order order = orderService.getOrderInfo(orderId);
-        orderService.verifyOrderIntegrity(order);
+        securityService.verifyPaymentApproveResponse(orderId, responseDto);
 
-        validatePaymentData(order, responseDto);
-
-        order = completeOrder(responseDto);
+        Order order = completeOrder(responseDto);
         savePaymentAndLedger(responseDto);
         decreaseProductStock(order.getOrderItems());
 
@@ -71,8 +69,6 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
         Long[] itemIds = command.getItemIds();
 
         Order order = orderService.getOrderInfo(command.getOrderId());
-
-        orderService.verifyOrderIntegrity(order);
 
         Payment payment = paymentRepository.findById(paymentKey);
         PaymentLedger lastLedger = getLastPaymentLedger(paymentKey);
@@ -101,22 +97,6 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     public List<PaymentLedger> getPaymentLedger(String paymentKey) {
         return paymentLedgerRepository.findAllByPaymentKey(paymentKey);
     }
-
-
-    private void validatePaymentData(Order order, PaymentConfirmResponseDto responseDto) {
-        if (!order.getId().toString().equals(responseDto.getOrderId())) {
-            throw new IllegalStateException("결제 응답의 주문 ID와 DB 주문 ID 불일치");
-        }
-
-        int orderTotalAmount = order.getOrderItems().stream()
-                .mapToInt(OrderItem::getAmount)
-                .sum();
-
-        if (orderTotalAmount != responseDto.getTotalAmount()) {
-            throw new IllegalStateException("결제 금액과 주문 금액 불일치");
-        }
-    }
-
 
     /// ------------------------------------ Private Methods ------------------------------------ ///
     private void validatePendingOrder(UUID orderId) {

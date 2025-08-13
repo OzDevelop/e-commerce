@@ -2,6 +2,7 @@ package backend.e_commerce.application.service;
 
 import backend.core.common.errorcode.errorcode.OrderErrorCode;
 import backend.core.common.errorcode.execption.OrderException;
+import backend.core.common.utils.IntegrityUtils;
 import backend.e_commerce.application.command.order.CreateOrderCommand;
 import backend.e_commerce.application.port.in.order.OrderCommandUseCase;
 import backend.e_commerce.application.port.out.OrderRepository;
@@ -23,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class OrderService implements OrderCommandUseCase {
+    private final SecurityService securityService;
+
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
@@ -40,7 +43,7 @@ public class OrderService implements OrderCommandUseCase {
                 validatedItems
         );
 
-        order.setIntegrityHash(calculateOrderHash(order));
+        order.setIntegrityHash(IntegrityUtils.calculateHash(order));
 
         // TODO - payment 추가 타이밍  설정
 
@@ -50,10 +53,8 @@ public class OrderService implements OrderCommandUseCase {
     @Override
     @Transactional
     public void complete(UUID orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
+        Order order = securityService.verifyOrderIntegrity(orderId);
 
-        verifyOrderIntegrity(order);
         order.completeOrder();
 
         orderRepository.update(order);
@@ -80,39 +81,9 @@ public class OrderService implements OrderCommandUseCase {
     }
 
     public Order getOrderInfo(UUID orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND));
-
-        verifyOrderIntegrity(order); // 무결성 검증
+        Order order = securityService.verifyOrderIntegrity(orderId);
 
         return order;
-
-    }
-
-    private String calculateOrderHash(Order order) {
-        try {
-            Map<String, Object> hashData = Map.of(
-                    "userId", order.getUserId(),
-                    "address", order.getOrderAddress(),
-                    "items", order.getOrderItems().stream()
-                            .map(i -> Map.of(
-                                    "productId", i.getProductId(),
-                                    "quantity", i.getQuantity(),
-                                    "unitPrice", i.getUnitPrice()
-                            )).toList()
-            );
-            String json = mapper.writeValueAsString(hashData);
-            return Sha512DigestUtils.shaHex(json);
-        } catch (Exception e) {
-            throw new RuntimeException("Order integrity hash 생성 실패", e);
-        }
-    }
-
-    public void verifyOrderIntegrity(Order order) {
-        String expectedHash = calculateOrderHash(order);
-        if (!expectedHash.equals(order.getIntegrityHash())) {
-            throw new IllegalStateException("주문 데이터가 변조되었습니다!");
-        }
     }
 
     /** -- Private Method -- **/

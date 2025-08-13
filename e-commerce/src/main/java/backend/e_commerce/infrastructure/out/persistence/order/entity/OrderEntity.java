@@ -54,10 +54,6 @@ public class OrderEntity {
     // 주문 데이터 무결성 해시
     private String integrityHash;
 
-    public void calculateAndSetIntegrityHash() {
-        this.integrityHash = IntegrityUtils.calculateHash(this);
-    }
-
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
