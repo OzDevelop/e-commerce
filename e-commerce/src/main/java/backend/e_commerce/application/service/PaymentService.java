@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCase {
     private final PaymentAPIs tossPayment;
     private final OrderService orderService;
+    private final SecurityService securityService;
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
@@ -42,6 +43,7 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     @Transactional
     public String paymentApproved(PaymentApprovedCommand command) {
         UUID orderId = UUID.fromString(command.getOrderId());
+
         validatePendingOrder(orderId);
 
         PaymentConfirmResponseDto responseDto = tossPayment.requestPaymentConfirm(command.toPaymentConfirmRequestDto());
@@ -49,6 +51,8 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
         if (!tossPayment.isPaymentConfirmed(responseDto.getStatus())) {
             return "fail";
         }
+
+        securityService.verifyPaymentApproveResponse(orderId, responseDto);
 
         Order order = completeOrder(responseDto);
         savePaymentAndLedger(responseDto);
@@ -65,6 +69,7 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
         Long[] itemIds = command.getItemIds();
 
         Order order = orderService.getOrderInfo(command.getOrderId());
+
         Payment payment = paymentRepository.findById(paymentKey);
         PaymentLedger lastLedger = getLastPaymentLedger(paymentKey);
 
@@ -92,7 +97,6 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     public List<PaymentLedger> getPaymentLedger(String paymentKey) {
         return paymentLedgerRepository.findAllByPaymentKey(paymentKey);
     }
-
 
     /// ------------------------------------ Private Methods ------------------------------------ ///
     private void validatePendingOrder(UUID orderId) {
@@ -135,7 +139,7 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     private void increaseProductStock(List<OrderItem> items) {
         items.forEach(orderItem -> {
             Product product = productRepository.findById(orderItem.getProductId()).orElseThrow();
-            product.decreaseStock(orderItem.getQuantity());
+            product.increaseStock(orderItem.getQuantity());
             productRepository.update(product);
         });
     }

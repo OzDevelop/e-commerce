@@ -1,5 +1,6 @@
 package backend.e_commerce.infrastructure.out.persistence.order.entity;
 
+import backend.core.common.utils.IntegrityUtils;
 import backend.e_commerce.domain.order.OrderStatus;
 import backend.e_commerce.infrastructure.out.persistence.payment.entity.PaymentEntity;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
@@ -49,6 +50,9 @@ public class OrderEntity {
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true ) // 설명 찾아보기
     private List<OrderItemEntity> orderItems = new ArrayList<>();
+
+    // 주문 데이터 무결성 해시
+    private String integrityHash;
 
     public void setStatus(OrderStatus status) {
         this.status = status;

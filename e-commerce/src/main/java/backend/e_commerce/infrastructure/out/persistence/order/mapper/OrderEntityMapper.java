@@ -13,6 +13,7 @@ public class OrderEntityMapper {
                 .userId(order.getUserId())
                 .address(AddressEntityMapper.fromDomainToEntity(order.getOrderAddress()))
                 .status(order.getOrderStatus())
+                .integrityHash(order.getIntegrityHash())
                 .build();
 
         List<OrderItemEntity> itemEntities = order.getOrderItems().stream()
@@ -20,6 +21,8 @@ public class OrderEntityMapper {
                 .collect(Collectors.toList());
 
         orderEntity.getOrderItems().addAll(itemEntities);
+
+        orderEntity.calculateAndSetIntegrityHash();
 
         return orderEntity;
     }
@@ -30,6 +33,7 @@ public class OrderEntityMapper {
                 .userId(entity.getUserId())
                 .orderStatus(entity.getStatus())
                 .orderAddress(AddressEntityMapper.fromEntityToDomain(entity.getAddress()))
+                .integrityHash(entity.getIntegrityHash())
                 .orderItems(entity.getOrderItems().stream()
                         .map(OrderItemEntityMapper::fromEntityToDomain)
                         .collect(Collectors.toList()))
