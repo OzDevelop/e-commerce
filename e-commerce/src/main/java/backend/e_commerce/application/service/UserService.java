@@ -6,8 +6,11 @@ import backend.core.common.errorcode.errorcode.UserErrorCode;
 import backend.core.common.errorcode.execption.UserException;
 import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
+import backend.e_commerce.application.port.in.cart.CartCommandUseCase;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
+import backend.e_commerce.application.port.out.CartRepository;
 import backend.e_commerce.application.port.out.UserRepository;
+import backend.e_commerce.domain.cart.Cart;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
@@ -29,6 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService implements UserInfoCommandUserUseCase {
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
+
+    private final CartCommandUseCase cartCommandUseCase;
+
     private final AuthenticationManager authenticationManager;  // 변경됨
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
@@ -40,7 +47,12 @@ public class UserService implements UserInfoCommandUserUseCase {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         System.out.println("encodedPassword = " + encodedPassword);
         user.setPassword(encodedPassword);
-        return userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+
+        cartCommandUseCase.createCart(savedUser.getId());
+
+        return savedUser;
     }
 
     @Override
