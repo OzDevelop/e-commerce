@@ -2,6 +2,7 @@ package backend.e_commerce.domain.order;
 
 import backend.core.common.errorcode.errorcode.OrderErrorCode;
 import backend.core.common.errorcode.execption.OrderException;
+import backend.core.common.utils.IntegrityUtils;
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.user.Address;
 import java.util.List;
@@ -21,7 +22,7 @@ public class Order {
     private final List<OrderItem> orderItems; // 주문 상품
     private OrderStatus orderStatus; // 주문상태
     private String paymentKey;
-
+    private String integrityHash;
 
     public static Order createOrder(Long userId, Address address, List<OrderItem> orderItems) {
         if (orderItems == null || orderItems.isEmpty()) {
@@ -108,5 +109,9 @@ public class Order {
     private boolean allItemsCancelled() {
         return this.orderItems.stream()
                 .allMatch(item -> item.getStatus() == OrderStatus.CANCELLED);
+    }
+
+    public void setIntegrityHash(String integrityHash) {
+        this.integrityHash = integrityHash;
     }
 }

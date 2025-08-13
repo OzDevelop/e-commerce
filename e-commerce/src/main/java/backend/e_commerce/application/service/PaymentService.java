@@ -42,6 +42,7 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     @Transactional
     public String paymentApproved(PaymentApprovedCommand command) {
         UUID orderId = UUID.fromString(command.getOrderId());
+
         validatePendingOrder(orderId);
 
         PaymentConfirmResponseDto responseDto = tossPayment.requestPaymentConfirm(command.toPaymentConfirmRequestDto());
@@ -50,7 +51,12 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
             return "fail";
         }
 
-        Order order = completeOrder(responseDto);
+        Order order = orderService.getOrderInfo(orderId);
+        orderService.verifyOrderIntegrity(order);
+
+        validatePaymentData(order, responseDto);
+
+        order = completeOrder(responseDto);
         savePaymentAndLedger(responseDto);
         decreaseProductStock(order.getOrderItems());
 
@@ -65,6 +71,9 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
         Long[] itemIds = command.getItemIds();
 
         Order order = orderService.getOrderInfo(command.getOrderId());
+
+        orderService.verifyOrderIntegrity(order);
+
         Payment payment = paymentRepository.findById(paymentKey);
         PaymentLedger lastLedger = getLastPaymentLedger(paymentKey);
 
@@ -91,6 +100,21 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     @Override
     public List<PaymentLedger> getPaymentLedger(String paymentKey) {
         return paymentLedgerRepository.findAllByPaymentKey(paymentKey);
+    }
+
+
+    private void validatePaymentData(Order order, PaymentConfirmResponseDto responseDto) {
+        if (!order.getId().toString().equals(responseDto.getOrderId())) {
+            throw new IllegalStateException("결제 응답의 주문 ID와 DB 주문 ID 불일치");
+        }
+
+        int orderTotalAmount = order.getOrderItems().stream()
+                .mapToInt(OrderItem::getAmount)
+                .sum();
+
+        if (orderTotalAmount != responseDto.getTotalAmount()) {
+            throw new IllegalStateException("결제 금액과 주문 금액 불일치");
+        }
     }
 
 
@@ -135,7 +159,7 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     private void increaseProductStock(List<OrderItem> items) {
         items.forEach(orderItem -> {
             Product product = productRepository.findById(orderItem.getProductId()).orElseThrow();
-            product.decreaseStock(orderItem.getQuantity());
+            product.increaseStock(orderItem.getQuantity());
             productRepository.update(product);
         });
     }
