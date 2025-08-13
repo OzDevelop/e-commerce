@@ -77,7 +77,7 @@ public class CheckoutService implements CheckoutCommandUseCase {
         // 4. CreateOrderCommand 생성
         CreateOrderCommand command = CreateOrderCommand.builder()
                 .userId(userId)
-                .address(address)
+                .address(shippingAddress)
                 .orderItems(orderItems)
                 .build();
 
