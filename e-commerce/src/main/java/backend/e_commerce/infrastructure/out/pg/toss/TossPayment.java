@@ -1,11 +1,10 @@
 package backend.e_commerce.infrastructure.out.pg.toss;
 
 import backend.e_commerce.application.port.out.api.PaymentAPIs;
-import backend.e_commerce.domain.payment.PaymentStatus;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentCancelResponseDto;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentConfirmResponseDto;
-import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
-import backend.e_commerce.representaion.request.payment.PaymentConfirmRequestDto;
+import backend.e_commerce.representaion.request.payment.PaymentCancelRequest;
+import backend.e_commerce.representaion.request.payment.PaymentConfirmRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -69,7 +68,7 @@ public class TossPayment implements PaymentAPIs {
     }
 
     @Override
-    public PaymentConfirmResponseDto requestPaymentConfirm(PaymentConfirmRequestDto paymentConfirmRequestDto) {
+    public PaymentConfirmResponseDto requestPaymentConfirm(PaymentConfirmRequest paymentConfirmRequestDto) {
         return restClient.method(HttpMethod.POST)
                 .uri(paymentProperties.getConfirmUrl())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -79,7 +78,7 @@ public class TossPayment implements PaymentAPIs {
     }
 
     @Override
-    public PaymentCancelResponseDto requestPaymentCancel(String paymentKey, PaymentCancelRequestDto paymentCancelRequestDto) {
+    public PaymentCancelResponseDto requestPaymentCancel(String paymentKey, PaymentCancelRequest paymentCancelRequestDto) {
         return restClient.method(HttpMethod.POST)
                 .uri(paymentProperties.getCancelUrl(paymentKey))
                 .contentType(MediaType.APPLICATION_JSON)

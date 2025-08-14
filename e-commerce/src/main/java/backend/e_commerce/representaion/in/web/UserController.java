@@ -5,13 +5,12 @@ import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
-import backend.e_commerce.application.port.out.UserRepository;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
-import backend.e_commerce.representaion.request.user.ChangePasswordRequestDto;
-import backend.e_commerce.representaion.request.user.LoginRequestDto;
-import backend.e_commerce.representaion.request.user.RegisterAddressRequestDto;
-import backend.e_commerce.representaion.request.user.RegisterUserRequestDto;
+import backend.e_commerce.representaion.request.user.ChangePasswordRequest;
+import backend.e_commerce.representaion.request.user.LoginRequest;
+import backend.e_commerce.representaion.request.user.RegisterAddressRequest;
+import backend.e_commerce.representaion.request.user.RegisterUserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +35,7 @@ public class UserController {
     @PostMapping("/register")
     //TODO - 공통 Response 객체 구현 시 변경 예정
     //TODO - ResponseDTO 구현 필요.
-    public User registerUser(@RequestBody RegisterUserRequestDto request) {
+    public User registerUser(@RequestBody RegisterUserRequest request) {
         RegisterUserCommand command = request.toRegisterUserCommand();
 
 
@@ -45,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public JwtToken loginUser(@RequestBody LoginRequestDto request) {
+    public JwtToken loginUser(@RequestBody LoginRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
 
@@ -81,14 +80,14 @@ public class UserController {
 
     //TODO - User 정보 수정
     @PatchMapping("/newPassword")
-    public User changePassword(@RequestBody ChangePasswordRequestDto request) {
+    public User changePassword(@RequestBody ChangePasswordRequest request) {
         ChangePasswordCommand command = request.toChangePasswordCommand();
 
         return userInfoCommandUserUseCase.changePassword(command);
     }
 
     @PostMapping("/address")
-    public Address registerAddress(@RequestBody RegisterAddressRequestDto request) {
+    public Address registerAddress(@RequestBody RegisterAddressRequest request) {
         RegisterAddressCommand command = request.toRegisterAddressCommand();
         return userInfoCommandUserUseCase.addAddress(command);
     }

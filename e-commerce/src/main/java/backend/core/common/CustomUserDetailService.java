@@ -1,18 +1,17 @@
 package backend.core.common;
 
-import backend.e_commerce.application.port.out.UserRepository;
+import backend.e_commerce.application.port.out.UserPersistencePort;
 import backend.e_commerce.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserPersistencePort userRepository;
 //    private final PasswordEncoder passwordEncoder;
 
     @Override

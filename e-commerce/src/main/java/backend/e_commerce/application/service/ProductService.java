@@ -6,8 +6,8 @@ import backend.e_commerce.application.command.product.CreateProductCommand;
 import backend.e_commerce.application.command.product.ProductCommandMapper;
 import backend.e_commerce.application.command.product.UpdateProductCommand;
 import backend.e_commerce.application.port.in.product.ProductCommandUseCase;
-import backend.e_commerce.application.port.out.ProductRepository;
-import backend.e_commerce.application.port.out.UserRepository;
+import backend.e_commerce.application.port.out.ProductPersistencePort;
+import backend.e_commerce.application.port.out.UserPersistencePort;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.product.ProductStatus;
 import backend.e_commerce.domain.user.User;
@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class ProductService implements ProductCommandUseCase {
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final ProductPersistencePort productRepository;
+    private final UserPersistencePort userRepository;
 
     @Override
     public Product createProduct(CreateProductCommand command) {

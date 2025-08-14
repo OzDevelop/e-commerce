@@ -8,21 +8,16 @@ import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterAddressCommand;
 import backend.e_commerce.application.port.in.cart.CartCommandUseCase;
 import backend.e_commerce.application.port.in.user.UserInfoCommandUserUseCase;
-import backend.e_commerce.application.port.out.CartRepository;
-import backend.e_commerce.application.port.out.UserRepository;
-import backend.e_commerce.domain.cart.Cart;
+import backend.e_commerce.application.port.out.CartPersistencePort;
+import backend.e_commerce.application.port.out.UserPersistencePort;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.command.user.UpdateUserCommand;
-import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
-import backend.e_commerce.infrastructure.out.persistence.user.entity.UserEntity;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,8 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserInfoCommandUserUseCase {
-    private final UserRepository userRepository;
-    private final CartRepository cartRepository;
+    private final UserPersistencePort userRepository;
+    private final CartPersistencePort cartRepository;
 
     private final CartCommandUseCase cartCommandUseCase;
 

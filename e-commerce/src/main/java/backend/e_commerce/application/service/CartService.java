@@ -4,7 +4,7 @@ import backend.e_commerce.application.command.cart.AddItemCommand;
 import backend.e_commerce.application.command.cart.ChangeQuantityCommand;
 import backend.e_commerce.application.command.cart.DeleteItemCommand;
 import backend.e_commerce.application.port.in.cart.CartCommandUseCase;
-import backend.e_commerce.application.port.out.CartRepository;
+import backend.e_commerce.application.port.out.CartPersistencePort;
 import backend.e_commerce.domain.cart.Cart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CartService implements CartCommandUseCase {
-    private final CartRepository cartRepository;
+    private final CartPersistencePort cartRepository;
 
     @Override
     public Cart createCart(Long userId) {

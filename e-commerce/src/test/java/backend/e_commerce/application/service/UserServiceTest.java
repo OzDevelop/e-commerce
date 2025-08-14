@@ -10,7 +10,7 @@ import backend.e_commerce.application.command.user.ChangePasswordCommand;
 import backend.e_commerce.application.command.user.RegisterUserCommand;
 import backend.e_commerce.application.command.user.RegisterUserCommand.AddressCommand;
 import backend.e_commerce.application.command.user.UpdateUserCommand;
-import backend.e_commerce.application.port.out.UserRepository;
+import backend.e_commerce.application.port.out.UserPersistencePort;
 import backend.e_commerce.domain.user.User;
 import backend.e_commerce.domain.user.UserRole;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class UserServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserPersistencePort userRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
 

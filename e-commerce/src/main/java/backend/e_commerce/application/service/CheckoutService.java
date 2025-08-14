@@ -3,21 +3,16 @@ package backend.e_commerce.application.service;
 import backend.e_commerce.application.command.order.CreateOrderCommand;
 import backend.e_commerce.application.port.in.order.CheckoutCommandUseCase;
 import backend.e_commerce.application.port.in.order.OrderCommandUseCase;
-import backend.e_commerce.application.port.out.CartRepository;
-import backend.e_commerce.application.port.out.OrderRepository;
-import backend.e_commerce.application.port.out.ProductRepository;
+import backend.e_commerce.application.port.out.CartPersistencePort;
 import backend.e_commerce.domain.cart.Cart;
 import backend.e_commerce.domain.cart.CartItem;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.order.OrderItem;
-import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.infrastructure.out.persistence.user.AddressEntityMapper;
 import backend.e_commerce.infrastructure.out.persistence.user.JpaAddressRepository;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CheckoutService implements CheckoutCommandUseCase {
-    private final CartRepository cartRepository;
+    private final CartPersistencePort cartRepository;
     private final JpaAddressRepository jpaAddressRepository;
 
     private final OrderCommandUseCase orderCommandUseCase;

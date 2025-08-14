@@ -2,10 +2,9 @@ package backend.e_commerce.representaion.in.web;
 
 import backend.e_commerce.application.port.in.order.CheckoutCommandUseCase;
 import backend.e_commerce.domain.order.Order;
-import backend.e_commerce.representaion.request.chekcout.CheckoutAllRequestDto;
-import backend.e_commerce.representaion.request.chekcout.CheckoutSelectedRequestDto;
+import backend.e_commerce.representaion.request.chekcout.CheckoutAllRequest;
+import backend.e_commerce.representaion.request.chekcout.CheckoutSelectedRequest;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,7 @@ public class CheckoutController {
     private final CheckoutCommandUseCase checkoutCommandUseCase;
 
     @PostMapping("/all")
-    public ResponseEntity<Order> checkout(@RequestBody CheckoutAllRequestDto request) {
+    public ResponseEntity<Order> checkout(@RequestBody CheckoutAllRequest request) {
 
         Order order = checkoutCommandUseCase.checkoutAll(request.getUserId(), request.getAddressId());
 
@@ -28,7 +27,7 @@ public class CheckoutController {
 
     @PostMapping("/selected")
     public ResponseEntity<Order> checkoutSelected(
-            @RequestBody CheckoutSelectedRequestDto request
+            @RequestBody CheckoutSelectedRequest request
     ) {
         Order order = checkoutCommandUseCase.checkoutSelected(
                 request.getUserId(),

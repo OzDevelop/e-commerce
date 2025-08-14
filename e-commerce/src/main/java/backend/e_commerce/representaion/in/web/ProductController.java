@@ -3,8 +3,8 @@ package backend.e_commerce.representaion.in.web;
 import backend.e_commerce.application.port.in.product.ProductCommandUseCase;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.product.ProductStatus;
-import backend.e_commerce.representaion.request.product.CreateProductRequestDto;
-import backend.e_commerce.representaion.request.product.UpdateProductRequestDto;
+import backend.e_commerce.representaion.request.product.CreateProductRequest;
+import backend.e_commerce.representaion.request.product.UpdateProductRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +25,16 @@ public class ProductController {
     private final ProductCommandUseCase productCommandUseCase;
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequestDto request) {
+    public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest request) {
         Product createdProduct = productCommandUseCase.createProduct(request.toCommand());
 
         return ResponseEntity.ok(createdProduct);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<List<Product>> batchCreateProduct(@RequestBody List<CreateProductRequestDto> requests) {
-        List<Product> createdProducts = productCommandUseCase.createProducts(requests.stream().map(CreateProductRequestDto::toCommand).collect(
+    public ResponseEntity<List<Product>> batchCreateProduct(@RequestBody List<CreateProductRequest> requests) {
+        List<Product> createdProducts = productCommandUseCase.createProducts(requests.stream().map(
+                CreateProductRequest::toCommand).collect(
                 Collectors.toList()));
 
         return ResponseEntity.ok(createdProducts);
@@ -41,7 +42,7 @@ public class ProductController {
 
     @PatchMapping("/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long productId,
-                                                 @RequestBody UpdateProductRequestDto request) {
+                                                 @RequestBody UpdateProductRequest request) {
         Product updatedProduct = productCommandUseCase.updateProduct(productId, request.toCommand());
 
         return ResponseEntity.ok(updatedProduct);

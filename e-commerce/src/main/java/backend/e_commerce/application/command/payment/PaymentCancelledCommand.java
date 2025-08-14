@@ -1,6 +1,6 @@
 package backend.e_commerce.application.command.payment;
 
-import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
+import backend.e_commerce.representaion.request.payment.PaymentCancelRequest;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +19,8 @@ public class PaymentCancelledCommand {
     private Long[] itemIds;
     private int cancellationAmount;
 
-    public PaymentCancelRequestDto toPaymentCancelRequestDto() {
-        return PaymentCancelRequestDto.builder()
+    public PaymentCancelRequest toPaymentCancelRequestDto() {
+        return PaymentCancelRequest.builder()
                 .orderId(orderId)
                 .paymentKey(paymentKey)
                 .cancelReason(cancelReason)

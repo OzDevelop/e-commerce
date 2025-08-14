@@ -5,11 +5,9 @@ import backend.e_commerce.application.command.payment.PaymentCancelledCommand;
 import backend.e_commerce.application.port.in.payment.PaymentCommandUseCase;
 import backend.e_commerce.application.port.in.payment.PaymentQueryUseCase;
 import backend.e_commerce.domain.payment.PaymentLedger;
-import backend.e_commerce.infrastructure.out.pg.toss.TossPayment;
-import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentCancelResponseDto;
 import backend.e_commerce.infrastructure.out.pg.toss.response.payment.PaymentLedgerResponseDto;
-import backend.e_commerce.representaion.request.payment.PaymentCancelRequestDto;
-import backend.e_commerce.representaion.request.payment.PaymentConfirmRequestDto;
+import backend.e_commerce.representaion.request.payment.PaymentCancelRequest;
+import backend.e_commerce.representaion.request.payment.PaymentConfirmRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +45,7 @@ public class PaymentController {
     }
 
     @PostMapping("/confirm")
-    public String paymentConfirm(@RequestBody PaymentConfirmRequestDto requestDto) {
+    public String paymentConfirm(@RequestBody PaymentConfirmRequest requestDto) {
         PaymentApprovedCommand command = new PaymentApprovedCommand(
                 requestDto.getPaymentKey(),
                 requestDto.getOrderId(),
@@ -61,7 +59,7 @@ public class PaymentController {
     }
     @PostMapping("api/payment/cancel")
     @ResponseBody
-    public boolean paymentCancel(@RequestBody PaymentCancelRequestDto requestDto) {
+    public boolean paymentCancel(@RequestBody PaymentCancelRequest requestDto) {
         PaymentCancelledCommand command = requestDto.toCommand();
 
         try {

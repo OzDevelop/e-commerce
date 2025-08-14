@@ -3,16 +3,12 @@ package backend.e_commerce.infrastructure.out.persistence.delivery.mapper;
 import backend.e_commerce.application.command.delivery.CreateDeliveryCommand;
 import backend.e_commerce.application.command.delivery.StartShippingCommand;
 import backend.e_commerce.domain.delivery.Delivery;
-import backend.e_commerce.domain.delivery.DeliveryStatus;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.infrastructure.out.persistence.delivery.entity.DeliveryEntity;
 import backend.e_commerce.infrastructure.out.persistence.delivery.entity.EmbeddedAddress;
 import backend.e_commerce.infrastructure.out.persistence.order.entity.OrderEntity;
-import backend.e_commerce.infrastructure.out.persistence.order.mapper.OrderEntityMapper;
-import backend.e_commerce.infrastructure.out.persistence.user.AddressEntityMapper;
-import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
-import backend.e_commerce.representaion.request.delivery.CreateDeliveryRequestDto;
-import backend.e_commerce.representaion.request.delivery.StartShippingRequestDto;
+import backend.e_commerce.representaion.request.delivery.CreateDeliveryRequest;
+import backend.e_commerce.representaion.request.delivery.StartShippingRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,7 +87,7 @@ public class DeliveryMapper {
         return entity;
     }
 
-    public static CreateDeliveryCommand fromCreateDtoToCommand(CreateDeliveryRequestDto dto) {
+    public static CreateDeliveryCommand fromCreateDtoToCommand(CreateDeliveryRequest dto) {
         return CreateDeliveryCommand.builder()
                 .orderId(dto.getOrderId())
                 .addressId(dto.getAddressId())
@@ -100,7 +96,7 @@ public class DeliveryMapper {
                 .build();
     }
 
-    public static StartShippingCommand fromShippingDtoToCommand(StartShippingRequestDto dto) {
+    public static StartShippingCommand fromShippingDtoToCommand(StartShippingRequest dto) {
         return StartShippingCommand.builder()
                 .deliveryId(dto.getDeliveryId())
                 .trackingNumber(dto.getTrackingNumber())

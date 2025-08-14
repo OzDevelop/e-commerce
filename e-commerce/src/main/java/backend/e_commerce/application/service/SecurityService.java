@@ -5,20 +5,19 @@ import backend.core.common.errorcode.errorcode.PaymentErrorCode;
 import backend.core.common.errorcode.execption.OrderException;
 import backend.core.common.errorcode.execption.PaymentException;
 import backend.core.common.utils.IntegrityUtils;
-import backend.e_commerce.application.port.out.OrderRepository;
+import backend.e_commerce.application.port.out.OrderPersistencePort;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentConfirmResponseDto;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-    private final OrderRepository orderRepository;
+    private final OrderPersistencePort orderRepository;
 
     /**
      * 주문 무결성 검증

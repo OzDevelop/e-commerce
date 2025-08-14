@@ -1,6 +1,6 @@
 package backend.e_commerce.application.command.payment;
 
-import backend.e_commerce.representaion.request.payment.PaymentConfirmRequestDto;
+import backend.e_commerce.representaion.request.payment.PaymentConfirmRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,8 +11,8 @@ public class PaymentApprovedCommand {
     private final String orderId;
     private final int amount;
 
-    public PaymentConfirmRequestDto toPaymentConfirmRequestDto() {
-        return new PaymentConfirmRequestDto(
+    public PaymentConfirmRequest toPaymentConfirmRequestDto() {
+        return new PaymentConfirmRequest(
                 paymentKey,
                 orderId,
                 amount

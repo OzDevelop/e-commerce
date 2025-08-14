@@ -1,14 +1,13 @@
 package backend.e_commerce.application.service;
 
-import backend.core.common.errorcode.execption.PaymentException;
 import backend.e_commerce.application.command.payment.PaymentApprovedCommand;
 import backend.e_commerce.application.command.payment.PaymentCancelledCommand;
 import backend.e_commerce.application.port.in.payment.PaymentCommandUseCase;
 import backend.e_commerce.application.port.in.payment.PaymentQueryUseCase;
-import backend.e_commerce.application.port.out.OrderRepository;
-import backend.e_commerce.application.port.out.PaymentLedgerRepository;
-import backend.e_commerce.application.port.out.PaymentRepository;
-import backend.e_commerce.application.port.out.ProductRepository;
+import backend.e_commerce.application.port.out.OrderPersistencePort;
+import backend.e_commerce.application.port.out.PaymentLedgerPersistencePort;
+import backend.e_commerce.application.port.out.PaymentPersistencePort;
+import backend.e_commerce.application.port.out.ProductPersistencePort;
 import backend.e_commerce.application.port.out.api.PaymentAPIs;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.order.OrderItem;
@@ -20,7 +19,6 @@ import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.infrastructure.out.persistence.payment.PaymentMapper;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentCancelResponseDto;
 import backend.e_commerce.infrastructure.out.pg.toss.response.PaymentConfirmResponseDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +34,10 @@ public class PaymentService implements PaymentCommandUseCase, PaymentQueryUseCas
     private final OrderService orderService;
     private final SecurityService securityService;
 
-    private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
-    private final PaymentRepository paymentRepository;
-    private final PaymentLedgerRepository paymentLedgerRepository;
+    private final OrderPersistencePort orderRepository;
+    private final ProductPersistencePort productRepository;
+    private final PaymentPersistencePort paymentRepository;
+    private final PaymentLedgerPersistencePort paymentLedgerRepository;
 
     @Override
     @Transactional

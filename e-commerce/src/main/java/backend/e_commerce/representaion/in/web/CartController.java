@@ -5,8 +5,8 @@ import backend.e_commerce.application.command.cart.ChangeQuantityCommand;
 import backend.e_commerce.application.command.cart.DeleteItemCommand;
 import backend.e_commerce.application.port.in.cart.CartCommandUseCase;
 import backend.e_commerce.domain.cart.Cart;
-import backend.e_commerce.representaion.request.cart.AddItemRequestDto;
-import backend.e_commerce.representaion.request.cart.ChangeQuantityRequestDto;
+import backend.e_commerce.representaion.request.cart.AddItemRequest;
+import backend.e_commerce.representaion.request.cart.ChangeQuantityRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +33,7 @@ public class CartController {
     // 2. 아이템 추가
     @PostMapping("/{userId}/items")
     public ResponseEntity<Cart> addItem(@PathVariable Long userId,
-                                        @RequestBody AddItemRequestDto dto) {
+                                        @RequestBody AddItemRequest dto) {
 
         AddItemCommand command = AddItemCommand.builder()
                 .userId(userId)
@@ -49,7 +49,7 @@ public class CartController {
     @PutMapping("/{userId}/items/{cartItemId}")
     public ResponseEntity<Cart> changeQuantity(@PathVariable Long userId,
                                                @PathVariable Long cartItemId,
-                                               @RequestBody ChangeQuantityRequestDto dto) {
+                                               @RequestBody ChangeQuantityRequest dto) {
         ChangeQuantityCommand command = ChangeQuantityCommand.builder()
                 .userId(userId)
                 .cartItemId(cartItemId)

@@ -3,7 +3,7 @@ package backend.e_commerce.representaion.in.web;
 import backend.e_commerce.application.command.order.CreateOrderCommand;
 import backend.e_commerce.application.port.in.order.OrderCommandUseCase;
 import backend.e_commerce.domain.order.Order;
-import backend.e_commerce.representaion.request.order.CreateOrderRequestDto;
+import backend.e_commerce.representaion.request.order.CreateOrderRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class OrderController {
     private final OrderCommandUseCase orderCommandUseCase;
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequestDto requestDto) {
+    public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest requestDto) {
         CreateOrderCommand command = CreateOrderCommand.toCommand(requestDto);
 
         Order createdOrder = orderCommandUseCase.createOrder(command);

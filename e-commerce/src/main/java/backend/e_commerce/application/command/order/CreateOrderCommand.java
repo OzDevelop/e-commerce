@@ -3,7 +3,7 @@ package backend.e_commerce.application.command.order;
 import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.payment.Payment;
 import backend.e_commerce.domain.user.Address;
-import backend.e_commerce.representaion.request.order.CreateOrderRequestDto;
+import backend.e_commerce.representaion.request.order.CreateOrderRequest;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ public class CreateOrderCommand {
     private final List<OrderItem> orderItems;
     private final Payment payment;
 
-    public static CreateOrderCommand toCommand(CreateOrderRequestDto dto) {
+    public static CreateOrderCommand toCommand(CreateOrderRequest dto) {
         List<OrderItem> orderItems = dto.getOrderItems().stream()
                 .map(item -> OrderItem.builder()
                         .productId(item.getProductId())  // productId 타입 맞추기 주의 (String or Long)

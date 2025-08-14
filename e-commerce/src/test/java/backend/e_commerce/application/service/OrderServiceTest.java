@@ -8,8 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import backend.e_commerce.application.command.order.CreateOrderCommand;
-import backend.e_commerce.application.port.out.OrderRepository;
-import backend.e_commerce.application.port.out.ProductRepository;
+import backend.e_commerce.application.port.out.OrderPersistencePort;
+import backend.e_commerce.application.port.out.ProductPersistencePort;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.order.OrderStatus;
@@ -32,10 +32,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class OrderServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderPersistencePort orderRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductPersistencePort productRepository;
 
     @InjectMocks
     private OrderService orderService;

@@ -6,17 +6,15 @@ import backend.e_commerce.application.command.delivery.CreateDeliveryCommand;
 import backend.e_commerce.application.command.delivery.StartShippingCommand;
 import backend.e_commerce.application.port.in.Delivery.DeliveryCommandUseCase;
 import backend.e_commerce.application.port.in.Delivery.DeliveryQueryUseCase;
-import backend.e_commerce.application.port.out.DeliveryRepository;
-import backend.e_commerce.application.port.out.OrderRepository;
+import backend.e_commerce.application.port.out.DeliveryPersistencePort;
+import backend.e_commerce.application.port.out.OrderPersistencePort;
 import backend.e_commerce.domain.delivery.Delivery;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.infrastructure.out.persistence.user.AddressEntityMapper;
 import backend.e_commerce.infrastructure.out.persistence.user.JpaAddressRepository;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUseCase {
-    private final DeliveryRepository deliveryRepository;
-    private final OrderRepository orderRepository;
+    private final DeliveryPersistencePort deliveryRepository;
+    private final OrderPersistencePort orderRepository;
     private final JpaAddressRepository jpaAddressRepository;
 
 

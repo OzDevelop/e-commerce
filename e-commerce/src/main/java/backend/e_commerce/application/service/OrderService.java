@@ -5,8 +5,8 @@ import backend.core.common.errorcode.execption.OrderException;
 import backend.core.common.utils.IntegrityUtils;
 import backend.e_commerce.application.command.order.CreateOrderCommand;
 import backend.e_commerce.application.port.in.order.OrderCommandUseCase;
-import backend.e_commerce.application.port.out.OrderRepository;
-import backend.e_commerce.application.port.out.ProductRepository;
+import backend.e_commerce.application.port.out.OrderPersistencePort;
+import backend.e_commerce.application.port.out.ProductPersistencePort;
 import backend.e_commerce.domain.order.Order;
 import backend.e_commerce.domain.order.OrderItem;
 import backend.e_commerce.domain.product.Product;
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.token.Sha512DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService implements OrderCommandUseCase {
     private final SecurityService securityService;
 
-    private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
+    private final OrderPersistencePort orderRepository;
+    private final ProductPersistencePort productRepository;
 
     private final ObjectMapper mapper = new ObjectMapper();
 

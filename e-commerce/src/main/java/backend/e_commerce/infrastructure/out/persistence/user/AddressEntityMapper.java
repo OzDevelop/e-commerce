@@ -2,7 +2,6 @@ package backend.e_commerce.infrastructure.out.persistence.user;
 
 import backend.e_commerce.domain.user.Address;
 import backend.e_commerce.infrastructure.out.persistence.user.entity.AddressEntity;
-import backend.e_commerce.representaion.request.delivery.ChangeAddressRequestDto;
 
 public class AddressEntityMapper {
     public static Address fromEntityToDomain(AddressEntity entity) {

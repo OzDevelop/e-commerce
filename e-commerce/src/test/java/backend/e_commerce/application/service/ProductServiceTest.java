@@ -6,14 +6,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import backend.core.common.errorcode.execption.ProductException;
 import backend.e_commerce.application.command.product.CreateProductCommand;
 import backend.e_commerce.application.command.product.UpdateProductCommand;
-import backend.e_commerce.application.port.out.ProductRepository;
-import backend.e_commerce.application.port.out.UserRepository;
+import backend.e_commerce.application.port.out.ProductPersistencePort;
+import backend.e_commerce.application.port.out.UserPersistencePort;
 import backend.e_commerce.domain.product.Product;
 import backend.e_commerce.domain.product.ProductStatus;
 import backend.e_commerce.domain.user.User;
@@ -31,9 +30,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductPersistencePort productRepository;
     @Mock
-    private UserRepository userRepository;
+    private UserPersistencePort userRepository;
 
     @InjectMocks
     private ProductService productService;
