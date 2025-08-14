@@ -28,7 +28,7 @@ public class OrderService implements OrderCommandUseCase {
     private final OrderPersistencePort orderRepository;
     private final ProductPersistencePort productRepository;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+//    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public Order createOrder(CreateOrderCommand command) {

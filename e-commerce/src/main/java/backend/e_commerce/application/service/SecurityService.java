@@ -24,8 +24,11 @@ public class SecurityService {
      * - DB에 저장된 integrityHash와 현재 Order 스냅샷을 해시한 값 비교
      */
     public Order verifyOrderIntegrity(UUID orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderException(OrderErrorCode.ORDER_NOT_FOUND, Map.of("orderId", orderId)));
+        Order order = orderRepository.findByIdForUpdate(orderId)
+                .orElseThrow(() -> new OrderException(
+                        OrderErrorCode.ORDER_NOT_FOUND,
+                        Map.of("orderId", orderId)
+                ));
 
         String currentHash = IntegrityUtils.calculateHash(order);
         if (!currentHash.equals(order.getIntegrityHash())) {

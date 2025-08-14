@@ -58,4 +58,10 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
     public Optional<OrderEntity> findByOrderId(UUID id) {
         return jpaOrderRepository.findById(id);
     }
+
+    @Override
+    public Optional<Order> findByIdForUpdate(UUID id) {
+        return jpaOrderRepository.findByIdForUpdate(id)
+                .map(OrderEntityMapper::fromEntityToDomain);
+    }
 }

@@ -11,4 +11,5 @@ public interface OrderPersistencePort {
     Optional<OrderEntity> findByOrderId(UUID id);
     Order update(Order order);
 
+    Optional<Order> findByIdForUpdate(UUID id);
 }
