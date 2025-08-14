@@ -45,6 +45,12 @@ public class SecurityConfig {
                                 .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/products").hasRole("SELLER")
                                 .requestMatchers("/api/products/**").hasRole("SELLER")
+                                .requestMatchers(
+                                        "/confirm",
+                                        "/success",
+                                        "/fail",
+                                        "/checkout.html"
+                                ).permitAll()
                                 .anyRequest().authenticated()
                         )
 

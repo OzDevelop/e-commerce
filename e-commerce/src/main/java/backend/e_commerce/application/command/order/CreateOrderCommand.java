@@ -23,7 +23,6 @@ public class CreateOrderCommand {
                 .map(item -> OrderItem.builder()
                         .productId(item.getProductId())  // productId 타입 맞추기 주의 (String or Long)
                         .quantity(item.getQuantity())
-                        .amount(item.getUnitPrice())
                         .build())
                 .toList();
 

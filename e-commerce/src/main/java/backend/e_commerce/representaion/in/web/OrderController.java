@@ -23,7 +23,7 @@ public class OrderController {
     private final OrderCommandUseCase orderCommandUseCase;
 
     @PostMapping
-    public ResponseEntity<Order>  createOrder(@RequestBody CreateOrderRequestDto requestDto) {
+    public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequestDto requestDto) {
         CreateOrderCommand command = CreateOrderCommand.toCommand(requestDto);
 
         Order createdOrder = orderCommandUseCase.createOrder(command);

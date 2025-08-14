@@ -14,7 +14,6 @@ public class OrderItem {
     private OrderStatus status; // 주문 상태, 기본값은 결제 대기 중
     private  int quantity; // 수량
     private final int unitPrice;    // 단위 가격
-    private int amount; // 통합 가격
 
     public OrderItem(Long id, Long productId, int quantity, int unitPrice) {
         this.id = id;
@@ -48,7 +47,6 @@ public class OrderItem {
             throw new IllegalArgumentException("재고보다 더 많이 감소시킬 수 없습니다.");
         }
         this.quantity -= quantity;
-        recalcAmount();
     }
 
     public void increaseQuantity(int quantity) {
@@ -56,15 +54,9 @@ public class OrderItem {
             throw new IllegalArgumentException("증가 수량은 0보다 커야 합니다.");
         }
         this.quantity += quantity;
-        recalcAmount();
     }
 
     public int getAmount() {
         return this.quantity * this.unitPrice;
     }
-
-    private void recalcAmount() {
-        this.amount = this.quantity * this.unitPrice;
-    }
-
 }

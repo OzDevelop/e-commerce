@@ -16,6 +16,6 @@ public class CreateOrderRequestDto {
     public static class OrderItemRequestDto {
         private Long productId;
         private int quantity;
-        private int unitPrice;
+//        private int unitPrice;
     }
 }

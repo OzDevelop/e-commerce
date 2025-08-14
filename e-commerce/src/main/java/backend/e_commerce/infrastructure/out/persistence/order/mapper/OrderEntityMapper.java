@@ -22,13 +22,11 @@ public class OrderEntityMapper {
 
         orderEntity.getOrderItems().addAll(itemEntities);
 
-        orderEntity.calculateAndSetIntegrityHash();
-
         return orderEntity;
     }
 
     public static Order fromEntityToDomain(OrderEntity entity) {
-        return Order.builder()
+        Order order = Order.builder()
                 .id(entity.getId())
                 .userId(entity.getUserId())
                 .orderStatus(entity.getStatus())
@@ -38,5 +36,7 @@ public class OrderEntityMapper {
                         .map(OrderItemEntityMapper::fromEntityToDomain)
                         .collect(Collectors.toList()))
                 .build();
+        order.calculateAndSetIntegrityHash();
+        return order;
     }
 }
