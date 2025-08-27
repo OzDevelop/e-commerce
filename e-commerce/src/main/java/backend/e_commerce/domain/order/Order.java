@@ -77,8 +77,6 @@ public class Order {
 
         int totalCancelAmount = 0;
 
-        System.out.println("OrderItems: " + this.orderItems.stream().map(OrderItem::getId).toList());
-
         for(long orderItemId : itemIds) {
             OrderItem item = this.orderItems.stream()
                     .filter(orderItem -> orderItem.getId().equals(orderItemId)).findFirst()

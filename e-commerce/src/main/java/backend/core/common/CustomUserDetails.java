@@ -25,8 +25,6 @@ public class CustomUserDetails implements UserDetails {
             role = "ROLE_" + role;
         }
 
-        System.out.println("User role in CustomUserDetails: " + role);
-
         String finalRole = role;
         return Collections.singleton(() -> finalRole);
 
@@ -34,7 +32,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        System.out.println("CustomUserDtails.getPassword>>" + user.getPassword());
         return user.getPassword();
     }
 

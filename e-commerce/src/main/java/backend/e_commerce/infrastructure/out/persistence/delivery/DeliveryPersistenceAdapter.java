@@ -45,8 +45,6 @@ public class DeliveryPersistenceAdapter implements DeliveryPersistencePort {
                         Map.of("orderId", deliveryId)
                 ));
 
-        System.out.println("entity.getId in Impl >>>>"+entity.getId());
-
         return DeliveryMapper.fromEntityToDomain(entity);
     }
 
@@ -63,13 +61,6 @@ public class DeliveryPersistenceAdapter implements DeliveryPersistencePort {
                 ));
 
         entity = DeliveryMapper.toEntity(delivery, entity);
-
-        System.out.println("entity.getId >> "+entity.getId());
-        System.out.println("entity.getTrackingNumber >> "+entity.getTrackingNumber());
-        System.out.println("entity.getDeliveryCompany >> "+entity.getDeliveryCompany());
-        System.out.println("entity.getTrackingNumber >> "+entity.getTrackingNumber());
-        System.out.println(delivery.getStatus());
-        System.out.println(delivery.getShippedAt());
 
         // 3. JPA가 dirty checking 으로 자동 반영
         return DeliveryMapper.fromEntityToDomain(entity);

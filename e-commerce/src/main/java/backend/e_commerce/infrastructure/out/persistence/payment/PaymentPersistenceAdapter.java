@@ -47,8 +47,6 @@ public class PaymentPersistenceAdapter implements PaymentPersistencePort {
 
         entity.setPaymentStatus(payment.getPaymentStatus());
 
-        System.out.println("entitiy.getPaymentStatus >> "+entity.getPaymentStatus());
-
         return PaymentMapper.fromEntityToDomain(entity);
     }
 }

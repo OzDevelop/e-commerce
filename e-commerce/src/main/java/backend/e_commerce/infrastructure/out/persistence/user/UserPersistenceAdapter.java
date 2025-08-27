@@ -20,10 +20,7 @@ public class UserPersistenceAdapter implements UserPersistencePort {
 
     @Override
     public User save(User user) {
-        System.out.println(user.getPassword());
         UserEntity userEntity =  UserEntity.create(user);
-
-        System.out.println("userEntity.getPassword()"+userEntity.getPassword());
 
         userEntity = jpaUserRepository.save(userEntity);
         return userEntity.toDomain();
@@ -40,7 +37,6 @@ public class UserPersistenceAdapter implements UserPersistencePort {
     @Override
     public User findByEmail(String email) {
         UserEntity userEntity = jpaUserRepository.findByEmail(email)
-
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return userEntity.toDomain();
     }

@@ -21,23 +21,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             throws IOException, ServletException {
         String token = resolveToken((HttpServletRequest) request);
 
-        System.out.println("Authorization header token = " + token);
-
         if(token != null && jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            System.out.println("Authentication set: " + authentication.getName());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Authorities in Authentication: " + authentication.getAuthorities());
-
-
-
         } else {
-            System.out.println("Invalid or missing token");
-
         }
 
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         chain.doFilter(request, response);
     }
 

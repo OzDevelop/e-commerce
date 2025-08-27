@@ -48,24 +48,13 @@ public class UserController {
         String email = request.getEmail();
         String password = request.getPassword();
 
-
         // 비밀번호 매칭 여부 테스트
         boolean matched = passwordEncoder.matches(request.getPassword() , "$2a$10$HAiorqaulkDTykEjsGNRqesQmseTieWF/98ShnegOqVOM/bB4.vvO");
-        System.out.println(">>> password matched? " + matched);
-
-
-
-        System.out.println(">>> loginUser email: " + request.getEmail());
-        System.out.println(">>> loginUser password(raw): " + request.getPassword());
-        System.out.println(">>> loginUser password(encoded): " + passwordEncoder.encode(request.getPassword()) );
-
-        System.out.println(">>> password matched? " + matched);
 
         JwtToken jwtToken = null;
 
         try {
             jwtToken = userInfoCommandUserUseCase.loginUser(request.getEmail(), request.getPassword());
-            System.out.println("Token generated: accessToken=" + jwtToken.getAccessToken() + ", refreshToken=" + jwtToken.getRefreshToken());
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

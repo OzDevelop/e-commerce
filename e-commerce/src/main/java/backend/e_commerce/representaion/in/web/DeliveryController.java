@@ -34,13 +34,7 @@ public class DeliveryController {
 
     @PostMapping("/start-shipping")
     public ResponseEntity<Delivery> startShipping(@RequestBody StartShippingRequest dto) {
-
-        System.out.println("dto.getId >>" + dto.getDeliveryId() );
-
-
         StartShippingCommand command = DeliveryMapper.fromShippingDtoToCommand(dto);
-
-        System.out.println("command.getId >>" + command.getDeliveryId() );
 
         Delivery delivery = deliveryCommandUseCase.startShipping(command);
 

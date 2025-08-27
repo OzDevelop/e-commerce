@@ -18,10 +18,6 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
             User user = userRepository.findByEmail(email);
-            System.out.println("000000000000000000000000000000000000000000000");
-            System.out.println("user.getEmail "+user.getEmail());
-            System.out.println("user.getEmail "+user.getPassword());
-            System.out.println("000000000000000000000000000000000000000000000");
             return createUserDetails(user);
         } catch (IllegalArgumentException e) {
             throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다: " + email);

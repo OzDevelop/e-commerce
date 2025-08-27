@@ -53,9 +53,6 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
                  command.getReceiverName(),
                  command.getReceiverPhone()
                  );
-
-        System.out.println("getReceiverName >>" +  delivery.getReceiverName());
-
         return deliveryRepository.save(delivery);
     }
 
@@ -67,17 +64,7 @@ public class DeliveryService implements DeliveryCommandUseCase, DeliveryQueryUse
             throw new DeliveryException(DeliveryErrorCode.DELIVERY_NOT_FOUND,
                     Map.of("deliveryId", command.getDeliveryId()));
         }
-
-        System.out.println("delivery.getId >> "+delivery.getId());
-
         delivery = delivery.startShipping(command.getTrackingNumber(), command.getDeliveryCompany(), LocalDateTime.now());
-
-        System.out.println("delivery.getId >> "+delivery.getId());
-        System.out.println("delivery.getTrackingNumber >> "+delivery.getTrackingNumber());
-        System.out.println("delivery.getDeliveryCompany >> "+delivery.getDeliveryCompany());
-        System.out.println("delivery.getTrackingNumber >> "+delivery.getTrackingNumber());
-        System.out.println(delivery.getStatus());
-        System.out.println(delivery.getShippedAt());
 
         return deliveryRepository.update(delivery);
     }
